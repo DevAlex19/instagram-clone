@@ -5,7 +5,37 @@ module.exports = {
     "./components/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      height: {
+        600: "600px",
+      },
+      width: {
+        520: "520px",
+      },
+      keyframes: {
+        fadeIn: {
+          from: {
+            opacity: "0",
+          },
+          to: {
+            opacity: "1",
+          },
+        },
+      },
+      animation: {
+        fadeIn: "fadeIn 1.2s ease-in",
+      },
+      borderWidth: {
+        1: "1px",
+      },
+      borderColor: {
+        gray: "#dbdbdb",
+      },
+      colors: {
+        gray: "#8e8e8e",
+        grayish: "#fafafa",
+      },
+    },
   },
   plugins: [],
 };

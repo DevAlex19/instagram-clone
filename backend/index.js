@@ -1,23 +1,21 @@
 const express = require("express");
-const app = express();
 const mongoose = require("mongoose");
 const cors = require("cors");
+const subscribersRouter = require("./routes/routes");
+
+const app = express();
 const corsOptions = {
   origin: "*",
   credentials: true, //access-control-allow-credentials:true
   optionSuccessStatus: 200,
 };
 
-mongoose.connect(
-  "mongodb+srv://dev19:Calculator1.@instagram-clone.p3l9946.mongodb.net/instagram-clone"
-);
+mongoose.connect(process.env.NEXT_PUBLIC_URL);
 const db = mongoose.connection;
 db.on("error", (error) => console.error(error));
 db.once("open", () => console.log("Connected to Database"));
 
 app.use(express.json());
-
-const subscribersRouter = require("./routes/routes");
 
 app.listen(3002, () => console.log("Server Started"));
 app.use(cors(corsOptions));

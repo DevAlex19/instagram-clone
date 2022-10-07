@@ -34,6 +34,14 @@ module.exports = {
       colors: {
         gray: "#8e8e8e",
         grayish: "#fafafa",
+        blue: "#0095f6",
+        darkBlue: "#00376b",
+      },
+      fontSize: {
+        smalltxt: "0.7rem",
+      },
+      screens: {
+        xs: "450px",
       },
     },
   },

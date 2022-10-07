@@ -20,7 +20,7 @@ function HomePageCarousel() {
   return (
     <div
       style={{ backgroundImage: "url(/images/phone.png)" }}
-      className="w-520 h-600 relative bg-no-repeat"
+      className="w-520 h-600 relative bg-no-repeat hidden lg:block"
     >
       {IMAGES.map((image, index) => {
         const visibility = index === activeImage ? "visible" : "invisible";

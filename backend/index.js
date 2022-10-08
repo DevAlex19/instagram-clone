@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
@@ -19,4 +20,4 @@ app.use(express.json());
 
 app.listen(3002, () => console.log("Server Started"));
 app.use(cors(corsOptions));
-app.use("/subscribers", subscribersRouter);
+app.use("/", subscribersRouter);

@@ -1,76 +1,41 @@
 const express = require("express");
 const router = express.Router();
-const Subscriber = require("../model/model");
+const User = require("../model/model");
+const jwt = require("jsonwebtoken");
 
-// Getting all
-router.get("/", async (req, res) => {
-  try {
-    const subscribers = await Subscriber.find();
-    res.json(subscribers);
-    console.log(subscribers);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
-
-// Getting One
-router.get("/:id", getSubscriber, (req, res) => {
-  res.json(res.subscriber);
-});
-
-// Creating one
-router.post("/", async (req, res) => {
-  const subscriber = new Subscriber({
+// Create user
+router.post("/createUser", async (req, res) => {
+  const user = new User({
     name: req.body.name,
-    subscribedToChannel: req.body.subscribedToChannel,
+    password: req.body.password,
   });
+  const token = generateAccessToken(req.body.name);
   try {
-    const newSubscriber = await subscriber.save();
-    res.status(201).json(newSubscriber);
+    const newUser = await user.save();
+    res.status(201).json({ ...user, ...token });
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
 });
 
-// Updating One
-router.patch("/:id", getSubscriber, async (req, res) => {
-  if (req.body.name != null) {
-    res.subscriber.name = req.body.name;
-  }
-  if (req.body.subscribedToChannel != null) {
-    res.subscriber.subscribedToChannel = req.body.subscribedToChannel;
-  }
+//Login user
+router.post("/loginUser", async (req, res) => {
   try {
-    const updatedSubscriber = await res.subscriber.save();
-    res.json(updatedSubscriber);
-  } catch (err) {
-    res.status(400).json({ message: err.message });
-  }
-});
+    const getUser = await User.findOne({ name: req.body.name });
 
-// Deleting One
-router.delete("/:id", getSubscriber, async (req, res) => {
-  try {
-    await res.subscriber.remove();
-    res.json({ message: "Deleted Subscriber" });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
-
-async function getSubscriber(req, res, next) {
-  let subscriber;
-  try {
-    subscriber = await Subscriber.findById(req.params.id);
-    if (subscriber == null) {
-      return res.status(404).json({ message: "Cannot find subscriber" });
+    if (req.body.password !== getUser.password) {
+      throw Error("Password doesn't match");
     }
+    res.status(201).json(getUser);
   } catch (err) {
-    return res.status(500).json({ message: err.message });
+    res.status(400).json({ message: err.message });
   }
+});
 
-  res.subscriber = subscriber;
-  next();
+function generateAccessToken(user) {
+  return jwt.sign({ user }, process.env.NEXT_PUBLIC_TOKEN, {
+    expiresIn: "30d",
+  });
 }
 
 module.exports = router;

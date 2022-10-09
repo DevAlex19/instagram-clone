@@ -7,7 +7,7 @@ function ResetPassword() {
   const router = useRouter();
 
   return (
-    <div style={{ maxWidth: "400px" }} className="mx-auto my-20">
+    <div style={{ maxWidth: "400px" }} className="mx-auto mt-20 mb-40">
       <div className="px-10 pt-5 bg-white border-1 border-gray rounded-sm text-center flex flex-col items-center">
         <div
           style={{ width: "90px", height: "90px" }}

@@ -3,9 +3,10 @@ import { useState } from "react";
 export type InputType = {
   width?: string;
   labelText?: string;
+  value?: any;
 };
 
-function Input({ width, labelText }: InputType) {
+function Input({ width, labelText, value }: InputType) {
   const [activeLabel, setActiveLabel] = useState(false);
 
   return (
@@ -29,6 +30,7 @@ function Input({ width, labelText }: InputType) {
       <input
         type="text"
         className=" outline-0 w-full h-full pt-4 pb-1.5 bg-grayish pl-2 text-xs"
+        {...value}
       />
     </div>
   );

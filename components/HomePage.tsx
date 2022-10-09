@@ -3,9 +3,17 @@ import { useRouter } from "next/router";
 import Button from "./Button";
 import HomePageCarousel from "./HomePageCarousel";
 import Input from "./Input";
+import { useForm } from "react-hook-form";
 
 function HomePage() {
   const router = useRouter();
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm();
+  function onSubmit() {}
 
   return (
     <div
@@ -24,17 +32,57 @@ function HomePage() {
                 objectFit="contain"
               />
             </div>
-            <Input
-              width="80"
-              labelText="Telefon, e-mail sau nume de utilizator"
-            />
-            <Input width="80" labelText="Parola" />
-            <Button
-              width="80"
-              modifiers="bg-blue m-auto text-white font-medium text-s rounded mt-4 py-1"
+            <form
+              className="flex flex-col items-center"
+              onSubmit={handleSubmit(onSubmit)}
             >
-              Conectare
-            </Button>
+              <Input
+                width="80"
+                labelText="Telefon, e-mail sau nume de utilizator"
+                value={register("email", {
+                  validate: (value) => {
+                    const regex =
+                      /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+                    if (!regex.test(value)) {
+                      return "Numele de utilizator pe care l-ai introdus nu aparţine unui cont. Te rugăm să verifici numele de utilizator şi să încerci din nou.";
+                    }
+                    return true;
+                  },
+                })}
+              />
+              <Input
+                width="80"
+                labelText="Parola"
+                value={register("password")}
+              />
+              <Button
+                width="80"
+                modifiers={`bg-blue text-white font-medium text-s rounded mt-4 py-1 opacity-${
+                  errors.email ||
+                  errors.password ||
+                  !watch().email ||
+                  !watch().password
+                    ? 30
+                    : 100
+                }`}
+                disabled={
+                  errors.email ||
+                  errors.password ||
+                  !watch().email ||
+                  !watch().password
+                    ? true
+                    : false
+                }
+              >
+                Conectare
+              </Button>
+            </form>
+            <p
+              style={{ maxWidth: "270px" }}
+              className="text-sm text-center mx-auto mt-5 text-red-600"
+            >
+              {errors.email?.message as string}
+            </p>
             <Button
               width="80"
               modifiers="m-auto text-darkBlue text-xs mt-6 mb-5"

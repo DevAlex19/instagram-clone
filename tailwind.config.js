@@ -30,6 +30,7 @@ module.exports = {
       },
       borderColor: {
         gray: "#dbdbdb",
+        grayish: "#dbdbdb",
       },
       colors: {
         gray: "#8e8e8e",

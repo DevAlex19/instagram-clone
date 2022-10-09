@@ -1,9 +1,10 @@
 import Image from "next/image";
 import { useRouter } from "next/router";
+import { RegisterType } from "../pages/register";
 import Button from "./Button";
 import Input from "./Input";
 
-function SignUp() {
+function SignUp({ setPage }: RegisterType) {
   const router = useRouter();
 
   return (

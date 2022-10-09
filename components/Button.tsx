@@ -2,11 +2,16 @@ export type ButtonType = {
   width?: string;
   children?: string;
   modifiers?: string;
+  onClick?: () => void;
 };
 
-function Button({ children, width, modifiers }: ButtonType) {
+function Button({ children, width, modifiers, onClick }: ButtonType) {
   return (
-    <button className={modifiers} style={{ width: `${width}%` }}>
+    <button
+      onClick={onClick}
+      className={modifiers}
+      style={{ width: `${width}%` }}
+    >
       {children}
     </button>
   );

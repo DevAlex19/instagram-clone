@@ -1,11 +1,17 @@
 import Image from "next/image";
+import { useRouter } from "next/router";
 import Button from "./Button";
 import HomePageCarousel from "./HomePageCarousel";
 import Input from "./Input";
 
 function HomePage() {
+  const router = useRouter();
+
   return (
-    <div className="w-full h-screen lg:flex lg:justify-center">
+    <div
+      style={{ height: "90vh" }}
+      className="w-full lg:flex lg:justify-center"
+    >
       <div className="flex justify-center lg:items-center lg:gap-x-10">
         <HomePageCarousel />
         <div style={{ width: "80%", maxWidth: "350px" }}>
@@ -32,6 +38,7 @@ function HomePage() {
             <Button
               width="80"
               modifiers="m-auto text-darkBlue text-xs mt-6 mb-5"
+              onClick={() => router.push("/forgotPassword")}
             >
               Ai uitat parola?
             </Button>
@@ -42,7 +49,10 @@ function HomePage() {
           >
             <p>
               Nu ai un cont?
-              <span className="text-blue font-medium cursor-pointer ml-1">
+              <span
+                onClick={() => router.push("/register")}
+                className="text-blue font-medium cursor-pointer ml-1"
+              >
                 Inscrie-te
               </span>
             </p>

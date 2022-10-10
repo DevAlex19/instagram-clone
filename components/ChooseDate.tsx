@@ -1,6 +1,7 @@
+import { useRef } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { RegisterType } from "../pages/register";
+import { createUserType, RegisterType } from "../pages/register";
 import Button from "./Button";
 
 const MONTHS = [
@@ -18,8 +19,9 @@ const MONTHS = [
   "decembrie",
 ];
 
-function ChooseDate({ setPage }: RegisterType) {
+function ChooseDate({ setPage, setCreateUser, createUser }: RegisterType) {
   const router = useRouter();
+  const dateRef = useRef<any>(null);
 
   function getYears() {
     const date = new Date().getFullYear();
@@ -51,17 +53,17 @@ function ChooseDate({ setPage }: RegisterType) {
         <p className="text-sm text-blue mb-3">
           De ce trebuie sa precizez data nasterii?
         </p>
-        <div className="flex gap-x-2 justify-center">
+        <div ref={dateRef} className="flex gap-x-2 justify-center">
           <select className="focus:border-0 outline-0 border-1 border-grayish rounded px-1 py-2 text-gray text-sm">
             {MONTHS.map((month, index) => {
               return <option key={index}>{month}</option>;
             })}
           </select>
           <select className="focus:border-0 outline-0 border-1 border-grayish rounded px-1 py-2 text-gray text-sm">
-            {Array(32)
+            {Array(30)
               .fill(0)
               .map((item, index) => (
-                <option key={index}>{index}</option>
+                <option key={index}>{index + 1}</option>
               ))}
           </select>
           <select className="focus:border-0 outline-0 border-1 border-grayish rounded px-1 py-2 text-gray text-sm">
@@ -77,6 +79,18 @@ function ChooseDate({ setPage }: RegisterType) {
         <Button
           width="100"
           modifiers="bg-blue m-auto text-white font-medium text-s rounded mt-4 py-1"
+          onClick={() => {
+            const getDate = [...dateRef.current.querySelectorAll("select")]
+              .map((elem) => elem.value)
+              .join(" ");
+            console.log(new Date("january 1 2022"));
+            setCreateUser({
+              ...createUser,
+              date: new Date(getDate).getTime().toString(),
+            });
+
+            setPage(2);
+          }}
         >
           Inainte
         </Button>

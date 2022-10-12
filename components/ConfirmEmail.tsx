@@ -1,11 +1,21 @@
 import { faEnvelope } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
+import { useSelector } from "react-redux";
 import { RegisterType } from "../pages/register";
+import { RootState, useAppDispatch } from "../store/store/store";
 import Button from "./Button";
 import Input from "./Input";
+import { useForm } from "react-hook-form";
+import { updateAccountStatus } from "../store/actions/actions";
+import { useRouter } from "next/router";
 
 function ConfirmEmail({ setPage }: RegisterType) {
+  const { code, email, token } = useSelector((state: RootState) => state.user);
+  const { register, watch } = useForm();
+  const dispatch = useAppDispatch();
+  const router = useRouter();
+
   return (
     <div
       style={{ maxWidth: "350px", height: "90vh" }}
@@ -18,14 +28,35 @@ function ConfirmEmail({ setPage }: RegisterType) {
           Enter the confirmation code we sent to test@gmail.com.{" "}
           <span>Resend code.</span>
         </p>
-        <Input width="100" labelText="Confirmation Code" />
+        <Input
+          width="100"
+          labelText="Confirmation Code"
+          value={register("code")}
+        />
         <Button
           width="100"
           modifiers="bg-blue m-auto text-white font-medium text-s rounded mt-6 py-1"
+          onClick={() => {
+            if (code.toLowerCase() === watch().code.toLowerCase()) {
+              dispatch(updateAccountStatus(email)).then((res) => {
+                if (res.payload) {
+                  const date = new Date();
+                  date.setDate(date.getDate() + 30);
+                  document.cookie = `token=${token}; expires=${date.toUTCString()}`;
+                  router.push("/");
+                  setPage(0);
+                }
+              });
+            }
+          }}
         >
           Inainte
         </Button>
-        <Button width="100" modifiers="text-blue font-semibold mt-3">
+        <Button
+          onClick={() => setPage(1)}
+          width="100"
+          modifiers="text-blue font-semibold mt-3"
+        >
           Inapoi
         </Button>
       </div>

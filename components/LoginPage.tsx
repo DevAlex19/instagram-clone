@@ -4,16 +4,41 @@ import Button from "./Button";
 import HomePageCarousel from "./HomePageCarousel";
 import Input from "./Input";
 import { useForm } from "react-hook-form";
+import { useAppDispatch } from "../store/store/store";
+import { getUserLogin } from "../store/actions/actions";
+
+type SubmitType = {
+  email: string;
+  password: string;
+};
 
 function HomePage() {
   const router = useRouter();
+  const dispatch = useAppDispatch();
   const {
     register,
     handleSubmit,
     watch,
     formState: { errors },
-  } = useForm();
-  function onSubmit() {}
+    setError,
+  } = useForm<SubmitType>();
+
+  function onSubmit({ email, password }: SubmitType) {
+    dispatch(getUserLogin({ email, password })).then((res) => {
+      if (res.payload.user) {
+        const { token } = res.payload.user;
+        const date = new Date();
+        date.setDate(date.getDate() + 30);
+        document.cookie = `token=${token}; expires=${date.toUTCString()}`;
+      } else {
+        setError("email", {
+          type: "custom",
+          message:
+            "Numele de utilizator pe care l-ai introdus nu aparţine unui cont. Te rugăm să verifici numele de utilizator şi să încerci din nou.",
+        });
+      }
+    });
+  }
 
   return (
     <div
@@ -40,20 +65,16 @@ function HomePage() {
                 width="80"
                 labelText="Telefon, e-mail sau nume de utilizator"
                 value={register("email", {
-                  validate: (value) => {
-                    const regex =
-                      /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-                    if (!regex.test(value)) {
-                      return "Numele de utilizator pe care l-ai introdus nu aparţine unui cont. Te rugăm să verifici numele de utilizator şi să încerci din nou.";
-                    }
-                    return true;
-                  },
+                  required: { value: true, message: "" },
                 })}
               />
               <Input
                 width="80"
                 labelText="Parola"
-                value={register("password")}
+                value={register("password", {
+                  required: { value: true, message: "" },
+                })}
+                type="password"
               />
               <Button
                 width="80"
@@ -62,8 +83,8 @@ function HomePage() {
                   errors.password ||
                   !watch().email ||
                   !watch().password
-                    ? 30
-                    : 100
+                    ? `30`
+                    : `100`
                 }`}
                 disabled={
                   errors.email ||

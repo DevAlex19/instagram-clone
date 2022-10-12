@@ -5,6 +5,7 @@ import Navbar from "../components/Navbar";
 import { store } from "../store/store/store";
 import { Provider } from "react-redux";
 import Head from "next/head";
+import PrivateRoute from "../components/PrivateRoute";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -15,7 +16,9 @@ function MyApp({ Component, pageProps }: AppProps) {
       </Head>
       <Provider store={store}>
         <Navbar />
-        <Component {...pageProps} />
+        <PrivateRoute>
+          <Component {...pageProps} />
+        </PrivateRoute>
         <Footer />
       </Provider>
     </>

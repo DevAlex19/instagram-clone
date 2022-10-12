@@ -8,14 +8,13 @@ export type createUserType = {
   password: string;
   name: string;
   username: string;
-  date?: string;
 };
 
 export type RegisterType = {
   setPage: (page: number) => void;
   page?: number;
   setCreateUser: (createUser: createUserType) => void;
-  createUser?: any;
+  createUser?: createUserType;
 };
 
 function Register() {

@@ -5,7 +5,10 @@ import {
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
+import { useDispatch } from "react-redux";
 import { RegisterType } from "../pages/register";
+import { getUser } from "../store/actions/actions";
+import { useAppDispatch } from "../store/store/store";
 import Button from "./Button";
 import Input from "./Input";
 
@@ -24,32 +27,20 @@ function SignUp({ setPage, setCreateUser }: RegisterType) {
     formState: { errors },
     watch,
     setError,
-    clearErrors,
   } = useForm<FormType>();
+  const dispatch = useAppDispatch();
+
   async function onSubmit({ email, password, name, username }: FormType) {
-    const getUser = await fetch("http://localhost:3002/getUser", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email,
-        username,
-      }),
+    dispatch(getUser({ email, username })).then((res) => {
+      if (res.payload.getEmail?.email) {
+        setError("email", { type: "custom", message: "" });
+        return;
+      }
+      if (res.payload.getUsername?.username) {
+        setError("username", { type: "custom", message: "" });
+        return;
+      }
     });
-
-    const result = await getUser.json();
-
-    if (result.getEmail?.email) {
-      setError("email", { type: "custom", message: "" });
-      return;
-    }
-    if (result.getUsername?.username) {
-      setError("username", { type: "custom", message: "" });
-      return;
-    }
-
     setCreateUser({ email, password, name, username });
     setPage(1);
   }

@@ -4,19 +4,37 @@ const User = require("../model/model");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 
+// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoic29hZGpzaWpzIiwiaWF0IjoxNjY1NTA0ODY1LCJleHAiOjE2NjU1MDQ4NzV9.JOk19h4iDzKfGeYTK93YJuuV_8twGlKmgMa06U4iIDQ
+
+// console.log(
+//   jwt.verify(
+//     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoic29hZGpzaWpzIiwiaWF0IjoxNjY1NTA0ODY1LCJleHAiOjE2NjU1MDQ4NzV9.JOk19h4iDzKfGeYTK93YJuuV_8twGlKmgMa06U4iIDQ",
+//     process.env.NEXT_PUBLIC_TOKEN
+//   )
+// );
+
 // Create user
 router.post("/createUser", async (req, res) => {
+  const token = generateAccessToken(req.body.email);
+  const characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  let code = "";
+  for (let i = 0; i < 8; i++) {
+    code += characters[Math.floor(Math.random() * characters.length)];
+  }
   const user = new User({
     email: req.body.email,
     password: req.body.password,
     name: req.body.name,
     username: req.body.username,
+    date: req.body.date,
+    code,
+    token,
   });
-  const token = generateAccessToken(req.body.email);
 
   try {
     const newUser = await user.save();
-    res.status(201).json(token);
+    res.status(201).json(newUser);
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
@@ -48,10 +66,24 @@ router.post("/loginUser", async (req, res) => {
   }
 });
 
+//Update account status
+router.post("/updateStatus", async (req, res) => {
+  try {
+    const getEmail = await User.updateOne(
+      { email: req.body.email },
+      { $set: { status: "active" } }
+    );
+
+    res.status(201).json({ getEmail });
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
 //Send create user email
 router.post("/registerEmail", async (req, res) => {
   const { to } = req.body;
-
+  const getEmail = await User.findOne({ email: to });
   const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
     auth: {
@@ -63,6 +95,10 @@ router.post("/registerEmail", async (req, res) => {
     from: process.env.NEXT_PUBLIC_EMAIL,
     to,
     subject: "Bine ai venit! Confirma adresa de e-mail",
+    html: `<p>Hi ${to}</p>
+      <p>Confirm your email address to continue capturing and sharing your moments with the world</p>
+      <p style="font-size:2rem;font-weight:bold">${getEmail.code.toUpperCase()}</p>
+    `,
   };
   transporter.sendMail(mailOptions, (err, result) => {
     if (err) {
@@ -72,6 +108,60 @@ router.post("/registerEmail", async (req, res) => {
       res.json("thanks for e-mailing me");
     }
   });
+});
+
+// Get user login
+router.post("/getUserLogin", async (req, res) => {
+  try {
+    let user = await User.findOne({
+      email: req.body.email,
+      password: req.body.password,
+    });
+    await jwt.verify(
+      user.token,
+      process.env.NEXT_PUBLIC_TOKEN,
+      async (err, token) => {
+        if (err) {
+          const token = generateAccessToken(req.body.email);
+          await User.updateOne(
+            { email: req.body.email },
+            { $set: { token: token } }
+          );
+          user = await User.findOne({
+            email: req.body.email,
+            password: req.body.password,
+          });
+        }
+      }
+    );
+
+    res.status(201).json({ user });
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
+//Check user
+
+router.post("/checkUser", async (req, res) => {
+  try {
+    let user = await User.findOne({
+      token: req.body.token,
+    });
+    await jwt.verify(
+      user.token,
+      process.env.NEXT_PUBLIC_TOKEN,
+      async (err, token) => {
+        if (err) {
+          user = null;
+        }
+      }
+    );
+
+    res.status(201).json({ user });
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
 });
 
 function generateAccessToken(user) {

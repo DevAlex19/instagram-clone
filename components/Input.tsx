@@ -41,30 +41,31 @@ function Input({ width, labelText, value, icon, type }: InputType) {
         className=" outline-0 w-full h-full pt-4 pb-1.5 bg-grayish pl-2 text-xs"
         {...value}
       />
-      {icon ? (
-        <div className="absolute right-2 top-2 flex items-center">
+
+      <div className="absolute right-2 top-2 flex items-center">
+        {icon ? (
           <FontAwesomeIcon
             className={`text-xl text-${
               icon.iconName.includes("mark") ? "red-600" : "gray"
             }`}
             icon={icon}
           />
-          {type === "password" ? (
-            <p
-              onClick={() => {
-                if (showPassword === "text") {
-                  setShowPassword("password");
-                } else {
-                  setShowPassword("text");
-                }
-              }}
-              className="ml-2 text-sm font-semibold cursor-pointer"
-            >
-              Afiseaza
-            </p>
-          ) : null}
-        </div>
-      ) : null}
+        ) : null}
+        {type === "password" ? (
+          <p
+            onClick={() => {
+              if (showPassword === "text") {
+                setShowPassword("password");
+              } else {
+                setShowPassword("text");
+              }
+            }}
+            className="ml-2 text-sm font-semibold cursor-pointer"
+          >
+            Afiseaza
+          </p>
+        ) : null}
+      </div>
     </div>
   );
 }

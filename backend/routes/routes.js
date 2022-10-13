@@ -187,7 +187,7 @@ router.post("/resetPassword", async (req, res) => {
         <p>Ne pare rau sa aflam ca intampini probleme la conectare. Am primit un mesaj pentru a ne anunta ca ai uitat parola. Daca este vorba de tine poti reseta parola acum.</p>
         <div style="marginBottom:1rem;height:50px">
         <a style="text-decoration:none;color:white;background:#0095f6;border-radius:4px;margin-right:5px;padding:0.5rem 1rem" href=http://localhost:3000/login>Conecteaza-te ca dfgff</a>
-        <a style="text-decoration:none;color:white;background:#0095f6;border-radius:4px;;padding:0.5rem 1rem" href=http://localhost:3000/newPassword?token=${token}">Reseteaza parola</a>
+        <a style="text-decoration:none;color:white;background:#0095f6;border-radius:4px;;padding:0.5rem 1rem" href=http://localhost:3000/resetPassword?token=${token}>Reseteaza parola</a>
         </div>
         `,
     };
@@ -210,6 +210,7 @@ router.post("/changePassword", async (req, res) => {
       { token: req.body.token },
       { $set: { password: req.body.password } }
     );
+    res.status(201).json({});
   } catch (e) {
     res.status(400).json({ message: err.message });
   }

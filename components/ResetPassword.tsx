@@ -61,7 +61,10 @@ function ResetPassword({ setPage, page }: ForgotPasswordType) {
           />
           <Button
             width="100"
-            modifiers="bg-blue m-auto text-white font-medium text-s rounded mt-4 py-1"
+            modifiers={`bg-blue m-auto text-white font-medium text-s rounded mt-4 py-1 ${
+              !watch().email || errors.email ? `opacity-30` : `opacity-100`
+            }`}
+            disabled={errors.email || !watch().email ? true : false}
           >
             Trimite linkul de conectare
           </Button>

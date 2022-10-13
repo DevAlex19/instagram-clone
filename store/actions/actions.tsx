@@ -198,6 +198,7 @@ export const resetPassword = createAsyncThunk(
           password,
         }),
       });
+
       const result = await res.json();
     } catch (e) {
       return e;

@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { checkUser } from "../store/actions/actions";
 import { RootState, useAppDispatch } from "../store/store/store";
+import Loading from "./Loading";
 
 type PrivateRouteType = {
   children: JSX.Element;
@@ -42,7 +43,7 @@ function PrivateRoute({ children }: PrivateRouteType) {
   }, [loading, router.pathname]);
 
   if (loading) {
-    return <>Loading...</>;
+    return <Loading />;
   }
 
   return children;

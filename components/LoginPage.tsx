@@ -79,13 +79,13 @@ function HomePage() {
               />
               <Button
                 width="80"
-                modifiers={`bg-blue text-white font-medium text-s rounded mt-4 py-1 opacity-${
-                  errors.email ||
-                  errors.password ||
+                modifiers={`bg-blue text-white font-medium text-s rounded mt-4 py-1 ${
                   !watch().email ||
-                  !watch().password
-                    ? `30`
-                    : `100`
+                  !watch().password ||
+                  errors.email ||
+                  errors.password
+                    ? `opacity-30`
+                    : `opacity-100`
                 }`}
                 disabled={
                   errors.email ||

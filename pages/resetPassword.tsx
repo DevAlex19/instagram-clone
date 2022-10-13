@@ -70,7 +70,24 @@ function Reset() {
             value={register("confirmPassword", { required: true })}
             type="password"
           />
-          <Button modifiers="bg-blue text-white font-medium text-s rounded mt-10 py-1 px-4">
+          <Button
+            modifiers={`bg-blue text-white font-medium text-s rounded mt-10 py-1 px-4 ${
+              !watch().password ||
+              !watch().confirmPassword ||
+              errors.password ||
+              errors.confirmPassword
+                ? `opacity-30`
+                : `opacity-100`
+            }`}
+            disabled={
+              errors.password ||
+              errors.confirmPassword ||
+              !watch().password ||
+              !watch().confirmPassword
+                ? true
+                : false
+            }
+          >
             Reseteaza parola
           </Button>
         </form>

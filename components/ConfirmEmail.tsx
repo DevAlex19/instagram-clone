@@ -11,7 +11,9 @@ import { updateAccountStatus } from "../store/actions/actions";
 import { useRouter } from "next/router";
 
 function ConfirmEmail({ setPage }: RegisterType) {
-  const { code, email, token } = useSelector((state: RootState) => state.user);
+  const { code, email, token } = useSelector(
+    (state: RootState) => state.user.data
+  );
   const { register, watch } = useForm();
   const dispatch = useAppDispatch();
   const router = useRouter();

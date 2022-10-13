@@ -1,11 +1,37 @@
+import {
+  faCircleCheck,
+  faCircleXmark,
+} from "@fortawesome/free-regular-svg-icons";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import { useForm } from "react-hook-form";
+import { ForgotPasswordType } from "../pages/forgotPassword";
+import { checkEmail, sendResetPasswordEmail } from "../store/actions/actions";
+import { useAppDispatch } from "../store/store/store";
 import Button from "./Button";
 import Input from "./Input";
 
-function ResetPassword() {
+function ResetPassword({ setPage, page }: ForgotPasswordType) {
   const router = useRouter();
+  const {
+    register,
+    watch,
+    handleSubmit,
+    setError,
+    formState: { errors },
+  } = useForm();
+  const dispatch = useAppDispatch();
 
+  function onSubmit() {
+    dispatch(checkEmail(watch().email)).then((res) => {
+      if (res.payload) {
+        dispatch(sendResetPasswordEmail(watch().email));
+        setPage({ ...page, number: 1, value: watch().email });
+      } else {
+        setError("email", { type: "custom", message: "" });
+      }
+    });
+  }
   return (
     <div style={{ maxWidth: "400px" }} className="mx-auto mt-20 mb-40">
       <div className="px-10 pt-5 bg-white border-1 border-gray rounded-sm text-center flex flex-col items-center">
@@ -20,13 +46,27 @@ function ResetPassword() {
           Introdu adresa de e-mail, numărul de telefon sau numele de utilizator
           şi îţi vom trimite un link pentru a recăpăta acces la cont.
         </p>
-        <Input width="100" labelText="E-mail" />
-        <Button
-          width="100"
-          modifiers="bg-blue m-auto text-white font-medium text-s rounded mt-4 py-1"
-        >
-          Trimite linkul de conectare
-        </Button>
+        <form className="w-full" onSubmit={handleSubmit(onSubmit)}>
+          <Input
+            width="100"
+            labelText="E-mail"
+            value={register("email")}
+            icon={
+              watch().email && errors.email
+                ? faCircleXmark
+                : watch().email && !errors.email
+                ? faCircleCheck
+                : null
+            }
+          />
+          <Button
+            width="100"
+            modifiers="bg-blue m-auto text-white font-medium text-s rounded mt-4 py-1"
+          >
+            Trimite linkul de conectare
+          </Button>
+        </form>
+
         <Button width="100" modifiers="m-auto text-darkBlue text-xs mt-4 mb-8">
           Nu poti reseta parola?
         </Button>

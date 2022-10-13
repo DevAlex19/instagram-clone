@@ -4,15 +4,6 @@ const User = require("../model/model");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 
-// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoic29hZGpzaWpzIiwiaWF0IjoxNjY1NTA0ODY1LCJleHAiOjE2NjU1MDQ4NzV9.JOk19h4iDzKfGeYTK93YJuuV_8twGlKmgMa06U4iIDQ
-
-// console.log(
-//   jwt.verify(
-//     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoic29hZGpzaWpzIiwiaWF0IjoxNjY1NTA0ODY1LCJleHAiOjE2NjU1MDQ4NzV9.JOk19h4iDzKfGeYTK93YJuuV_8twGlKmgMa06U4iIDQ",
-//     process.env.NEXT_PUBLIC_TOKEN
-//   )
-// );
-
 // Create user
 router.post("/createUser", async (req, res) => {
   const token = generateAccessToken(req.body.email);
@@ -159,6 +150,78 @@ router.post("/checkUser", async (req, res) => {
     );
 
     res.status(201).json({ user });
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
+//Reset password email
+router.post("/resetPassword", async (req, res) => {
+  try {
+    const { to } = req.body;
+    const user = await User.findOne({ email: to });
+    let token = user.token;
+    await jwt.verify(
+      user.token,
+      process.env.NEXT_PUBLIC_TOKEN,
+      async (err, res) => {
+        if (err) {
+          const newtoken = generateAccessToken(to);
+          await User.updateOne({ email: to }, { $set: { token: newtoken } });
+          token = newtoken;
+        }
+      }
+    );
+    const transporter = nodemailer.createTransport({
+      host: "smtp.gmail.com",
+      auth: {
+        user: process.env.NEXT_PUBLIC_EMAIL,
+        pass: process.env.NEXT_PUBLIC_PASS,
+      },
+    });
+    const mailOptions = {
+      from: process.env.NEXT_PUBLIC_EMAIL,
+      to,
+      subject: `${user.username}, este simplu sa te reconectezi`,
+      html: `<p>Salut ${user.username},</p>
+        <p>Ne pare rau sa aflam ca intampini probleme la conectare. Am primit un mesaj pentru a ne anunta ca ai uitat parola. Daca este vorba de tine poti reseta parola acum.</p>
+        <div style="marginBottom:1rem;height:50px">
+        <a style="text-decoration:none;color:white;background:#0095f6;border-radius:4px;margin-right:5px;padding:0.5rem 1rem" href=http://localhost:3000/login>Conecteaza-te ca dfgff</a>
+        <a style="text-decoration:none;color:white;background:#0095f6;border-radius:4px;;padding:0.5rem 1rem" href=http://localhost:3000/newPassword?token=${token}">Reseteaza parola</a>
+        </div>
+        `,
+    };
+    transporter.sendMail(mailOptions, (err, result) => {
+      if (err) {
+        res.json("Opps error occured");
+      } else {
+        res.json("thanks for e-mailing me");
+      }
+    });
+    res.status(201).json({ ...user, token });
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
+router.post("/changePassword", async (req, res) => {
+  try {
+    await User.updateOne(
+      { token: req.body.token },
+      { $set: { password: req.body.password } }
+    );
+  } catch (e) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
+//Check if email exists
+
+router.post("/checkEmail", async (req, res) => {
+  const { email } = req.body;
+  try {
+    const getUser = await User.findOne({ email });
+    res.status(201).json(getUser);
   } catch (err) {
     res.status(400).json({ message: err.message });
   }

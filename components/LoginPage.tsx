@@ -30,6 +30,7 @@ function HomePage() {
         const date = new Date();
         date.setDate(date.getDate() + 30);
         document.cookie = `token=${token}; expires=${date.toUTCString()}`;
+        router.push("/");
       } else {
         setError("email", {
           type: "custom",

@@ -22,11 +22,13 @@ function PrivateRoute({ children }: PrivateRouteType) {
     let timeout: ReturnType<typeof setTimeout>;
 
     if (tokenCookie) {
-      const token = tokenCookie.split("=")[1];
-      dispatch(checkUser(token));
-      timeout = setTimeout(() => setLoading(false), 100);
+      if (!data.email) {
+        const token = tokenCookie.split("=")[1];
+        dispatch(checkUser(token));
+        timeout = setTimeout(() => setLoading(false), 100);
+      }
     } else {
-      if (protectedRoute) {
+      if (router.pathname === "/") {
         router.push("/login");
       }
       timeout = setTimeout(() => setLoading(false), 100);
@@ -37,7 +39,7 @@ function PrivateRoute({ children }: PrivateRouteType) {
       router.push("/");
     }
     () => clearTimeout(timeout);
-  }, [loading]);
+  }, [loading, router.pathname]);
 
   if (loading) {
     return <>Loading...</>;

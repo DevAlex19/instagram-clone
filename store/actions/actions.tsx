@@ -16,6 +16,11 @@ type createUserType = {
   date?: string;
 };
 
+type resetPasswordType = {
+  token: string;
+  password: string;
+};
+
 export const getUser = createAsyncThunk(
   "app/getUser",
   async ({ email, username }: getUserType) => {
@@ -29,6 +34,28 @@ export const getUser = createAsyncThunk(
         body: JSON.stringify({
           email,
           username,
+        }),
+      });
+      const result = await res.json();
+      return result;
+    } catch (e) {
+      return e;
+    }
+  }
+);
+
+export const checkEmail = createAsyncThunk(
+  "app/checkEmail",
+  async (email: string) => {
+    try {
+      const res = await fetch("http://localhost:3002/checkEmail", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
         }),
       });
       const result = await res.json();
@@ -150,6 +177,49 @@ export const checkUser = createAsyncThunk(
       const result = await res.json();
 
       return result;
+    } catch (e) {
+      return e;
+    }
+  }
+);
+
+export const resetPassword = createAsyncThunk(
+  "/resetPassword",
+  async ({ token, password }: resetPasswordType) => {
+    try {
+      const res = await fetch("http://localhost:3002/changePassword", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          token,
+          password,
+        }),
+      });
+      const result = await res.json();
+    } catch (e) {
+      return e;
+    }
+  }
+);
+
+export const sendResetPasswordEmail = createAsyncThunk(
+  "/sendResetPasswordEmail",
+  async (to: string) => {
+    try {
+      const res = await fetch("http://localhost:3002/resetPassword", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          to,
+        }),
+      });
+      const result = await res.json();
     } catch (e) {
       return e;
     }

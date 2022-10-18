@@ -11,6 +11,7 @@ module.exports = {
       },
       width: {
         520: "520px",
+        850: "850px",
       },
       keyframes: {
         fadeIn: {
@@ -43,6 +44,10 @@ module.exports = {
       },
       screens: {
         xs: "450px",
+        m: "820px",
+      },
+      maxWidth: {
+        950: "950",
       },
     },
   },

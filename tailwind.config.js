@@ -38,6 +38,7 @@ module.exports = {
         grayish: "#fafafa",
         blue: "#0095f6",
         darkBlue: "#00376b",
+        gray2: "rgb(243 244 246)",
       },
       fontSize: {
         smalltxt: "0.7rem",

@@ -46,7 +46,10 @@ function MenuDropdown({ modal, setModal }: MenuDropdownType) {
         <FontAwesomeIcon icon={faBookmark} />
         <p className="text-sm">Salvate</p>
       </div>
-      <div className="flex items-center gap-x-2.5 px-4 py-2.5 cursor-pointer hover:bg-grayish">
+      <div
+        className="flex items-center gap-x-2.5 px-4 py-2.5 cursor-pointer hover:bg-grayish"
+        onClick={() => router.push("/settings")}
+      >
         <FontAwesomeIcon icon={faGear} />
         <p className="text-sm">Setari</p>
       </div>
@@ -61,6 +64,10 @@ function MenuDropdown({ modal, setModal }: MenuDropdownType) {
       <div
         style={{ borderTop: "1px solid rgb(239, 239, 239)" }}
         className="hover:bg-grayish px-4 py-2"
+        onClick={() => {
+          document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+          router.push("/login");
+        }}
       >
         <Button width="100" modifiers="text-left text-sm">
           Deconectare

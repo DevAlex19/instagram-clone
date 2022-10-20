@@ -1,5 +1,7 @@
+import SettingsPage from "../components/SettingsPage";
+
 function Settings() {
-  return <></>;
+  return <SettingsPage />;
 }
 
 export default Settings;

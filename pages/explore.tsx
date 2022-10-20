@@ -1,5 +1,7 @@
+import ExplorePosts from "../components/ExplorePosts";
+
 function Explore() {
-  return <></>;
+  return <ExplorePosts />;
 }
 
 export default Explore;

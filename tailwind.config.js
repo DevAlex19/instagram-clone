@@ -49,6 +49,9 @@ module.exports = {
       maxWidth: {
         950: "950",
       },
+      extend: {
+        display: ["group-hover"],
+      },
     },
   },
   plugins: [],

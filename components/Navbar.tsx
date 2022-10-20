@@ -5,12 +5,16 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../store/store/store";
+import FavoriteModal from "./FavoriteModal";
+import MenuDropdown from "./MenuDropdown";
 import UploadModal from "./UploadModal";
 
 function Navbar() {
   const router = useRouter();
   const { data } = useSelector((state: RootState) => state.user);
   const [uploadModal, setUploadModal] = useState(false);
+  const [favoriteModal, setFavoriteModal] = useState(false);
+  const [menuDropdown, setMenuDropdown] = useState(false);
 
   return (
     <div
@@ -77,48 +81,117 @@ function Navbar() {
               <UploadModal modal={uploadModal} setModal={setUploadModal} />
               <div
                 style={{ minWidth: "25px", minHeight: "25px" }}
-                className="cursor-pointer"
+                className="cursor-pointer relative"
                 onClick={() => router.push("/")}
               >
-                <Image src="/images/home.png" width="25px" height="25px" />
+                <Image
+                  src={
+                    router.pathname === "/" &&
+                    !uploadModal &&
+                    !favoriteModal &&
+                    !menuDropdown
+                      ? "/images/home-solid.png"
+                      : "/images/home.png"
+                  }
+                  width="25px"
+                  height="25px"
+                />
               </div>
               <div
                 style={{ minWidth: "25px", minHeight: "25px" }}
                 className="cursor-pointer"
                 onClick={() => router.push("/inbox")}
               >
-                <Image src="/images/plane.png" width="25px" height="25px" />
+                <Image
+                  src={
+                    router.pathname === "/inbox" &&
+                    !uploadModal &&
+                    !favoriteModal &&
+                    !menuDropdown
+                      ? "/images/plane-solid.png"
+                      : "/images/plane.png"
+                  }
+                  width="25px"
+                  height="25px"
+                />
               </div>
               <div
                 style={{ minWidth: "25px", minHeight: "25px" }}
                 className="cursor-pointer"
                 onClick={() => setUploadModal(true)}
               >
-                <Image src="/images/plus.png" width="25px" height="25px" />
+                <Image
+                  src={
+                    uploadModal ? "/images/plus-solid.png" : "/images/plus.png"
+                  }
+                  width="25px"
+                  height="25px"
+                />
               </div>
               <div
                 style={{ minWidth: "25px", minHeight: "25px" }}
                 className="cursor-pointer"
+                onClick={() => router.push("/explore")}
               >
-                <Image src="/images/compass.png" width="25px" height="25px" />
+                <Image
+                  src={
+                    router.pathname === "/explore" &&
+                    !uploadModal &&
+                    !favoriteModal &&
+                    !menuDropdown
+                      ? "/images/compass-solid.png"
+                      : "/images/compass.png"
+                  }
+                  width="25px"
+                  height="25px"
+                />
               </div>
               <div
                 style={{ minWidth: "25px", minHeight: "25px" }}
-                className="cursor-pointer"
+                className="relative"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setMenuDropdown(false);
+                  setFavoriteModal((prev) => !prev);
+                }}
               >
-                <Image src="/images/heart.png" width="25px" height="25px" />
+                <Image
+                  className="cursor-pointer "
+                  src={
+                    favoriteModal
+                      ? "/images/heart-solid.png"
+                      : "/images/heart.png"
+                  }
+                  width="25px"
+                  height="25px"
+                />
+                <FavoriteModal
+                  modal={favoriteModal}
+                  setModal={setFavoriteModal}
+                />
               </div>
               <div
                 style={{
-                  border: "1px solid black",
+                  border: menuDropdown ? "1px solid black" : "",
                   width: "28px",
                   height: "28px",
                   minWidth: "28px",
                   minHeight: "28px",
                 }}
-                className="rounded-full overflow-hidden cursor-pointer"
+                className="rounded-full relative"
               >
-                <Image src="/images/avatar.png" width="28px" height="28px" />
+                <Image
+                  src="/images/avatar.png"
+                  width="28px"
+                  height="28px"
+                  className="cursor-pointer rounded-full"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setFavoriteModal(false);
+                    setMenuDropdown((prev) => !prev);
+                  }}
+                />
+                <MenuDropdown modal={menuDropdown} setModal={setMenuDropdown} />
               </div>
             </div>
           ) : null}

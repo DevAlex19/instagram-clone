@@ -30,6 +30,14 @@ const subscriberSchema = new mongoose.Schema({
   token: {
     type: String,
   },
+  profile: {
+    type: String
+  },
+  description: {
+    type: String
+  },
+
+
 });
 
 module.exports = mongoose.model("users", subscriberSchema);

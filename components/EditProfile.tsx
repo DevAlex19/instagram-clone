@@ -1,7 +1,26 @@
 import Image from "next/image";
+import { useState } from "react";
 import Button from "./Button";
 
 function EditProfile() {
+  const [image, setImage] = useState("");
+
+  const uploadAvatar = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const data = new FormData();
+      data.append('file', e.target.files[0])
+      data.append('upload_preset', 'upload_posts')
+      data.append('cloud_name', process.env.NEXT_PUBLIC_CLOUD_NAME as string)
+
+
+      // await fetch(`https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUD_NAME}/image/upload`, {
+      //   method: 'post',
+      //   body: data
+      // })
+    }
+
+  }
+
   return (
     <div className="p-5 m:p-8 bg-white">
       <div className="flex items-center gap-x-8 ml-0 m:ml-[100px]">
@@ -15,6 +34,7 @@ function EditProfile() {
           <input
             type="file"
             className="absolute top-0 left-0 w-full h-full opacity-0"
+            onChange={uploadAvatar}
           />
         </div>
         <div>

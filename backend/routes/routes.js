@@ -3,6 +3,8 @@ const router = express.Router();
 const User = require("../model/model");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
+const Follow = require('../model/followModel')
+
 
 // Create user
 router.post("/createUser", async (req, res) => {
@@ -30,6 +32,20 @@ router.post("/createUser", async (req, res) => {
     res.status(400).json({ message: err.message });
   }
 });
+
+//Follow user
+router.post('/follow', async (req, res) => {
+  try {
+    const follow = new Follow({
+      following: req.body.following,
+      followers: req.body.followers
+    })
+    const newFollow = await follow.save()
+    res.status(201).json(newFollow)
+  } catch (e) {
+    res.status(400).json({ message: err.message })
+  }
+})
 
 // Get user
 router.post("/getUser", async (req, res) => {

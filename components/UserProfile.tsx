@@ -1,5 +1,5 @@
 import { faComment, faHeart } from "@fortawesome/free-regular-svg-icons";
-import { faGear } from "@fortawesome/free-solid-svg-icons";
+import { faCommentSlash, faGear } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -14,9 +14,8 @@ function UserProfile() {
   const [modal, setModal] = useState(false);
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const { user: { data: { profile, name, username } }, posts } = useSelector((state: RootState) => state)
-  const x = useSelector(state => state);
-  console.log(x)
+  const { posts, profile: { name, username, profile }, user: { data } } = useSelector((state: RootState) => state)
+
   useEffect(() => {
     dispatch(getProfile(router.query.profile as string))
   }, [])
@@ -105,13 +104,16 @@ function UserProfile() {
           Distribuie prima fotografie
         </Button>
       </div> */}
-      <div
-        style={{ gridTemplateColumns: "repeat(auto-fit,minmax(250px,1fr)" }}
-        className="max-w-[970px] justify-between gap-7 grid mt-7"
-      >
-        {Array(10)
-          .fill(0)
-          .map((item, index) => {
+      {posts[0].image ?
+        <div
+          style={{ gridTemplateColumns: "repeat(auto-fit,minmax(250px,1fr)" }}
+          className="max-w-[970px] justify-between gap-7 grid mt-7"
+        >
+          {posts.map((post, index) => {
+            const comments = post.comments.reduce((res, acc: any) => {
+              return res + acc.subcomments.length
+            }, 0) + post.comments.length
+
             return (
               <div
                 key={index}
@@ -119,7 +121,7 @@ function UserProfile() {
                 onClick={() => setModal(true)}
               >
                 <Image
-                  src="https://img.freepik.com/free-vector/best-scene-nature-landscape-mountain-river-forest-with-sunset-evening-warm-tone-illustration_1150-39403.jpg?w=2000"
+                  src={post.image}
                   width="100%"
                   height="100%"
                   layout="fill"
@@ -131,18 +133,18 @@ function UserProfile() {
                 >
                   <div className="flex items-center gap-x-2 font-semibold">
                     <FontAwesomeIcon icon={faHeart} className="text-xl" />
-                    <p>454k</p>
+                    <p>{post.likes}</p>
                   </div>
                   <div className="flex items-center gap-x-2 font-semibold">
                     <FontAwesomeIcon icon={faComment} className="text-xl" />
-                    <p>3243</p>
+                    <p>{comments}</p>
                   </div>
                 </div>
               </div>
             );
           })}
-        <PostModal modal={modal} setModal={setModal} />
-      </div>
+          <PostModal modal={modal} setModal={setModal} />
+        </div> : null}
     </div>
   );
 }

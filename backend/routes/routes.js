@@ -78,6 +78,16 @@ router.post("/getUser", async (req, res) => {
   }
 });
 
+// Get users
+router.get("/getUsers", async (req, res) => {
+  try {
+    const users = await User.find();
+    res.status(201).json(users);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
 //Login user
 router.post("/loginUser", async (req, res) => {
   try {

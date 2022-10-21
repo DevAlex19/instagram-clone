@@ -28,7 +28,18 @@ const initialState = {
       email: '', image: '', likes: '', date: '',
       comments: []
     }
-  ]
+  ],
+  profile: {
+    name: "",
+    username: "",
+    email: "",
+    password: "",
+    code: "",
+    token: "",
+    date: "",
+    status: "",
+    profile: ''
+  }
 };
 
 export const mainSlice = createSlice({
@@ -65,8 +76,8 @@ export const mainSlice = createSlice({
     })
     builder.addCase(getProfile.fulfilled, (state, action) => {
       const { user, posts } = action.payload;
-      state.user.data = { ...state.user.data, ...user }
-      state.posts = { ...state.posts, ...posts }
+      state.profile = { ...state.profile, ...user }
+      state.posts = [...posts]
     })
   },
 });

@@ -19,7 +19,7 @@ type ModalType = {
 
 function UploadModal({ modal, setModal }: ModalType) {
   const [page, setPage] = useState(0);
-  const [image, setImage] = useState({ url: "" });
+  const [image, setImage] = useState({ url: "", data: null });
 
   function getPage() {
     switch (page) {
@@ -48,9 +48,8 @@ function UploadModal({ modal, setModal }: ModalType) {
   return (
     <div
       style={{ background: "rgba(0,0,0,0.6)", zIndex: "1" }}
-      className={`${
-        modal ? "flex" : "hidden"
-      } fixed w-full h-full top-0 left-0 flex items-center justify-center`}
+      className={`${modal ? "flex" : "hidden"
+        } fixed w-full h-full top-0 left-0 flex items-center justify-center`}
       onClick={() => {
         setModal(false);
         setPage(0);

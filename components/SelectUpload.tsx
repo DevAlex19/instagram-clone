@@ -12,7 +12,7 @@ function SelectUpload({ setPage, image, setImage }: UploadModalType) {
       const reader = new FileReader();
       const url = reader.readAsDataURL(file);
       reader.onloadend = function () {
-        setImage({ ...image, url: reader.result });
+        setImage({ ...image, url: reader.result, data: file });
         setPage(1);
       };
     }

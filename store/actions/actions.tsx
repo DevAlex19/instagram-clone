@@ -4,6 +4,7 @@ type getUserType = {
   email: string;
   username: string;
 };
+
 type getUserLoginType = {
   email: string;
   password: string;
@@ -189,7 +190,7 @@ export const checkUser = createAsyncThunk(
 );
 
 export const resetPassword = createAsyncThunk(
-  "/resetPassword",
+  "app/resetPassword",
   async ({ token, password }: resetPasswordType) => {
     try {
       const res = await fetch("http://localhost:3002/changePassword", {
@@ -212,7 +213,7 @@ export const resetPassword = createAsyncThunk(
 );
 
 export const sendResetPasswordEmail = createAsyncThunk(
-  "/sendResetPasswordEmail",
+  "app/sendResetPasswordEmail",
   async (to: string) => {
     try {
       const res = await fetch("http://localhost:3002/resetPassword", {
@@ -233,7 +234,7 @@ export const sendResetPasswordEmail = createAsyncThunk(
 );
 
 
-export const changeAvatar = createAsyncThunk('/avatar', async ({ data, email }: changeAvatarType) => {
+export const changeAvatar = createAsyncThunk('app/avatar', async ({ data, email }: changeAvatarType) => {
   let result = '';
   try {
     await fetch(`https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUD_NAME}/image/upload`, {
@@ -241,7 +242,6 @@ export const changeAvatar = createAsyncThunk('/avatar', async ({ data, email }: 
       body: data
     }).then(res => res.json()).then(async data => {
       if (data.url) {
-        console.log(data.url)
         const avatar = await fetch("http://localhost:3002/changeAvatar", {
           method: "POST",
           headers: {
@@ -261,4 +261,59 @@ export const changeAvatar = createAsyncThunk('/avatar', async ({ data, email }: 
     console.log(e)
   }
   return result;
+})
+
+
+
+export const createPost = createAsyncThunk('app/createPost', async ({ email, data }: changeAvatarType) => {
+  let result = {
+    email: '', image: '', likes: '', date: '',
+    comments: []
+  };
+  try {
+    await fetch(`https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUD_NAME}/image/upload`, {
+      method: 'post',
+      body: data
+    }).then(res => res.json()).then(async data => {
+      if (data.url) {
+        const post = await fetch("http://localhost:3002/createPost", {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email,
+            image: data.url
+          }),
+        });
+        const postResult = await post.json()
+        result = postResult
+      }
+
+    })
+  } catch (e) {
+    console.log(e)
+  }
+  return result;
+})
+
+
+export const getProfile = createAsyncThunk('app/getProfile', async (username: string) => {
+  try {
+    const profile = await fetch("http://localhost:3002/getProfile", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        username
+      }),
+    })
+    const result = await profile.json()
+    return result;
+  } catch (e) {
+    console.log(e)
+  }
 })

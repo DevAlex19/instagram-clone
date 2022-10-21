@@ -2,6 +2,8 @@ import { createSlice } from "@reduxjs/toolkit";
 import {
   changeAvatar,
   checkUser,
+  createPost,
+  getProfile,
   registerUser,
   updateAccountStatus,
 } from "../actions/actions";
@@ -21,6 +23,12 @@ const initialState = {
     },
     loading: "idle",
   },
+  posts: [
+    {
+      email: '', image: '', likes: '', date: '',
+      comments: []
+    }
+  ]
 };
 
 export const mainSlice = createSlice({
@@ -49,6 +57,16 @@ export const mainSlice = createSlice({
       if (action.payload) {
         state.user.data.profile = action.payload;
       }
+    })
+    builder.addCase(createPost.fulfilled, (state, action) => {
+      if (action.payload) {
+        state.posts = [...state.posts, action.payload];
+      }
+    })
+    builder.addCase(getProfile.fulfilled, (state, action) => {
+      const { user, posts } = action.payload;
+      state.user.data = { ...state.user.data, ...user }
+      state.posts = { ...state.posts, ...posts }
     })
   },
 });

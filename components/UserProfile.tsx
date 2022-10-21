@@ -3,16 +3,23 @@ import { faGear } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { RootState } from "../store/store/store";
+import { getProfile } from "../store/actions/actions";
+import { RootState, useAppDispatch } from "../store/store/store";
 import Button from "./Button";
 import PostModal from "./PostModal";
 
 function UserProfile() {
   const [modal, setModal] = useState(false);
   const router = useRouter();
-  const { data: { profile } } = useSelector((state: RootState) => state.user)
+  const dispatch = useAppDispatch();
+  const { user: { data: { profile, name, username } }, posts } = useSelector((state: RootState) => state)
+  const x = useSelector(state => state);
+  console.log(x)
+  useEffect(() => {
+    dispatch(getProfile(router.query.profile as string))
+  }, [])
 
   return (
     <div className="m-0 md:m-auto w-full md:w-[51%] md:min-w-[750px] min-h-[78vh] md:min-h-[83vh]">
@@ -28,11 +35,11 @@ function UserProfile() {
               objectFit="cover"
             />
           </div>
-          <p className="block md:hidden font-semibold text-sm">user</p>
+          <p className="block md:hidden font-semibold text-sm">{name}</p>
         </div>
         <div>
           <div className="flex items-center gap-x-4">
-            <p className="text-2xl md:text-3xl font-light">username</p>
+            <p className="text-2xl md:text-3xl font-light">{username}</p>
             <Button
               onClick={() => router.push("/settings")}
               modifiers="hidden md:block mt-3 text-sm font-semibold border-[1px] border-[#dbdbdb] rounded py-1 px-5"
@@ -64,7 +71,7 @@ function UserProfile() {
               <p className="text-base">urmarire</p>
             </div>
           </div>
-          <p className="hidden md:block mt-5 font-semibold">name</p>
+          <p className="hidden md:block mt-5 font-semibold">{name}</p>
         </div>
       </div>
       <div className="flex md:hidden justify-around border-b-[1px] border-gray py-3">

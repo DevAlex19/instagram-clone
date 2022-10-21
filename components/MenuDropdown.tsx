@@ -7,6 +7,8 @@ import { faGear, faRotate } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/router";
 import { useEffect, useRef } from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "../store/store/store";
 import Button from "./Button";
 
 type MenuDropdownType = {
@@ -17,6 +19,7 @@ type MenuDropdownType = {
 function MenuDropdown({ modal, setModal }: MenuDropdownType) {
   const dropdown = useRef<HTMLHeadingElement>(null);
   const router = useRouter();
+  const { data: { username } } = useSelector((state: RootState) => state.user);
 
   useEffect(() => {
     function handleClickOutside(e: any) {
@@ -31,13 +34,12 @@ function MenuDropdown({ modal, setModal }: MenuDropdownType) {
   return (
     <div
       ref={dropdown}
-      className={`${
-        modal ? "block" : "hidden"
-      } absolute bg-white rounded-lg top-10 right-[-10px] w-[230px] shadow z-10`}
+      className={`${modal ? "block" : "hidden"
+        } absolute bg-white rounded-lg top-10 right-[-10px] w-[230px] shadow z-10`}
     >
       <div
         className="flex items-center gap-x-2.5 px-4 py-2.5 cursor-pointer hover:bg-grayish"
-        onClick={() => router.push("/grgr")}
+        onClick={() => router.push(`/${username}`)}
       >
         <FontAwesomeIcon icon={faCircleUser} />
         <p className="text-sm">Profil</p>

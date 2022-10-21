@@ -4,6 +4,7 @@ const User = require("../model/model");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 const Follow = require('../model/followModel')
+const Posts = require('../model/postsModel')
 
 
 // Create user
@@ -32,6 +33,24 @@ router.post("/createUser", async (req, res) => {
     res.status(400).json({ message: err.message });
   }
 });
+
+// Create post
+router.post("/createPost", async (req, res) => {
+
+  const post = new Posts({
+    email: req.body.email,
+    image: req.body.image,
+    date: new Date(),
+  });
+
+  try {
+    const newPost = await post.save();
+    res.status(201).json(newPost);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
 
 //Follow user
 router.post('/follow', async (req, res) => {
@@ -256,6 +275,18 @@ router.post("/changeAvatar", async (req, res) => {
     res.status(400).json({ message: err.message });
   }
 });
+
+
+router.post('/getProfile', async (req, res) => {
+  try {
+    const user = await User.findOne({ username: req.body.username })
+    const posts = await Posts.find({ email: user.email })
+    res.status(201).json({ user, posts });
+  } catch (e) {
+    res.status(400).json({ message: e.message })
+  }
+})
+
 
 function generateAccessToken(user) {
   return jwt.sign({ user }, process.env.NEXT_PUBLIC_TOKEN, {

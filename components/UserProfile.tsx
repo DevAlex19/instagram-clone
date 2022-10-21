@@ -4,12 +4,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useState } from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "../store/store/store";
 import Button from "./Button";
 import PostModal from "./PostModal";
 
 function UserProfile() {
   const [modal, setModal] = useState(false);
   const router = useRouter();
+  const { data: { profile } } = useSelector((state: RootState) => state.user)
 
   return (
     <div className="m-0 md:m-auto w-full md:w-[51%] md:min-w-[750px] min-h-[78vh] md:min-h-[83vh]">
@@ -17,11 +20,12 @@ function UserProfile() {
         <div className="flex flex-col items-center">
           <div className="cursor-pointer w-[70px] h-[70px] md:w-[150px] md:h-[150px] relative">
             <Image
-              src="/images/avatar.png"
+              src={profile ? profile : "/images/avatar.png"}
               width="100%"
               height="100%"
               layout="responsive"
               className="rounded-full cursor-pointer"
+              objectFit="cover"
             />
           </div>
           <p className="block md:hidden font-semibold text-sm">user</p>

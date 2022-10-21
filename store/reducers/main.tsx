@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import {
+  changeAvatar,
   checkUser,
   registerUser,
   updateAccountStatus,
@@ -16,6 +17,7 @@ const initialState = {
       token: "",
       date: "",
       status: "",
+      profile: ''
     },
     loading: "idle",
   },
@@ -43,6 +45,11 @@ export const mainSlice = createSlice({
         state.user.loading = "succeeded";
       }
     });
+    builder.addCase(changeAvatar.fulfilled, (state, action) => {
+      if (action.payload) {
+        state.user.data.profile = action.payload;
+      }
+    })
   },
 });
 

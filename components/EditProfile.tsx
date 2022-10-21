@@ -1,9 +1,13 @@
 import Image from "next/image";
 import { useState } from "react";
+import { useSelector } from "react-redux";
+import { changeAvatar } from "../store/actions/actions";
+import { RootState, useAppDispatch } from "../store/store/store";
 import Button from "./Button";
 
 function EditProfile() {
-  const [image, setImage] = useState("");
+  const dispatch = useAppDispatch();
+  const { data: { email, profile } } = useSelector((state: RootState) => state.user);
 
   const uploadAvatar = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -11,25 +15,22 @@ function EditProfile() {
       data.append('file', e.target.files[0])
       data.append('upload_preset', 'upload_posts')
       data.append('cloud_name', process.env.NEXT_PUBLIC_CLOUD_NAME as string)
-
-
-      // await fetch(`https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUD_NAME}/image/upload`, {
-      //   method: 'post',
-      //   body: data
-      // })
+      dispatch(changeAvatar({ data, email }))
     }
 
   }
+
 
   return (
     <div className="p-5 m:p-8 bg-white">
       <div className="flex items-center gap-x-8 ml-0 m:ml-[100px]">
         <div className="w-[40px] h-[40px] relative">
           <Image
-            src="/images/avatar.png"
+            src={profile ? profile : "/images/avatar.png"}
             width="40px"
             height="40px"
             className="rounded-full cursor-pointer"
+            objectFit="cover"
           />
           <input
             type="file"
@@ -43,6 +44,7 @@ function EditProfile() {
             <input
               type="file"
               className="absolute left-0 top-0 w-full h-full opacity-0"
+              onChange={uploadAvatar}
             />
             <p className="text-blue text-sm font-semibold">
               Schimba fotografia de profil

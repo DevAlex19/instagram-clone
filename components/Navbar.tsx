@@ -87,9 +87,9 @@ function Navbar() {
                 <Image
                   src={
                     router.pathname === "/" &&
-                    !uploadModal &&
-                    !favoriteModal &&
-                    !menuDropdown
+                      !uploadModal &&
+                      !favoriteModal &&
+                      !menuDropdown
                       ? "/images/home-solid.png"
                       : "/images/home.png"
                   }
@@ -105,9 +105,9 @@ function Navbar() {
                 <Image
                   src={
                     router.pathname === "/inbox" &&
-                    !uploadModal &&
-                    !favoriteModal &&
-                    !menuDropdown
+                      !uploadModal &&
+                      !favoriteModal &&
+                      !menuDropdown
                       ? "/images/plane-solid.png"
                       : "/images/plane.png"
                   }
@@ -136,9 +136,9 @@ function Navbar() {
                 <Image
                   src={
                     router.pathname === "/explore" &&
-                    !uploadModal &&
-                    !favoriteModal &&
-                    !menuDropdown
+                      !uploadModal &&
+                      !favoriteModal &&
+                      !menuDropdown
                       ? "/images/compass-solid.png"
                       : "/images/compass.png"
                   }
@@ -181,10 +181,11 @@ function Navbar() {
                 className="rounded-full relative"
               >
                 <Image
-                  src="/images/avatar.png"
+                  src={data.profile ? data.profile : "/images/avatar.png"}
                   width="28px"
                   height="28px"
                   className="cursor-pointer rounded-full"
+                  objectFit="cover"
                   onClick={(e) => {
                     e.stopPropagation();
                     setFavoriteModal(false);

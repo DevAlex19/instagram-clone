@@ -244,6 +244,19 @@ router.post("/checkEmail", async (req, res) => {
   }
 });
 
+// update avatar
+router.post("/changeAvatar", async (req, res) => {
+  try {
+    await User.updateOne(
+      { email: req.body.email },
+      { $set: { profile: req.body.profile } }
+    );
+    res.status(201).json({ profile: req.body.profile });
+  } catch (e) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
 function generateAccessToken(user) {
   return jwt.sign({ user }, process.env.NEXT_PUBLIC_TOKEN, {
     expiresIn: "30d",

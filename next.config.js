@@ -9,7 +9,7 @@ const nextConfig = {
         hostname: "**",
       },
     ],
-    domains: ["localhost"],
+    domains: ["localhost", "res.cloudinary.com"],
   },
 };
 

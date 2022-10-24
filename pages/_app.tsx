@@ -6,6 +6,7 @@ import { store } from "../store/store/store";
 import { Provider } from "react-redux";
 import Head from "next/head";
 import PrivateRoute from "../components/PrivateRoute";
+import ToastNotification from "../components/ToastNotification";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -20,6 +21,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           <Component {...pageProps} />
         </PrivateRoute>
         <Footer />
+        <ToastNotification />
       </Provider>
     </>
   );

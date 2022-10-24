@@ -20,6 +20,7 @@ const initialState = {
       date: "",
       status: "",
       profile: "",
+      description: "",
     },
     loading: "idle",
   },
@@ -43,12 +44,20 @@ const initialState = {
     status: "",
     profile: "",
   },
+  notification: [""],
 };
 
 export const mainSlice = createSlice({
   name: "app",
   initialState,
-  reducers: {},
+  reducers: {
+    addNotification: (state, action) => {
+      state.notification = [action.payload];
+    },
+    removeNotification: (state) => {
+      state.notification = [""];
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(registerUser.fulfilled, (state, action) => {
       state.user.data = { ...state.user.data, ...action.payload };
@@ -84,5 +93,7 @@ export const mainSlice = createSlice({
     });
   },
 });
+
+export const { addNotification, removeNotification } = mainSlice.actions;
 
 export default mainSlice.reducer;

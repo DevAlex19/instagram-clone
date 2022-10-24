@@ -2,6 +2,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
+import { watch } from "../backend/model/model";
 import { changeAvatar } from "../store/actions/actions";
 import { RootState, useAppDispatch } from "../store/store/store";
 import Button from "./Button";
@@ -11,7 +12,12 @@ function EditProfile() {
   const {
     data: { email, profile, name, username },
   } = useSelector((state: RootState) => state.user);
-  const { register, handleSubmit } = useForm();
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm();
 
   function onSubmit() {}
 
@@ -56,125 +62,131 @@ function EditProfile() {
           </div>
         </div>
       </div>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="flex flex-col gap-y-1 m:gap-y-0 m:flex-row gap-x-7 mt-5">
-          <p className="font-semibold m:text-right max-w-none m:max-w-[143px] m:flex-[1_0_143px]">
-            Nume
-          </p>
-          <div className="max-w-[370px]">
-            <input
-              type="text"
-              className="border-[1px] rounded border-gray outline-0 w-full py-1 px-2"
-              {...register("name")}
-              defaultValue={name}
-            />
-            <p className="text-xs text-gray mt-4">
-              Ajută-i pe alţii să descopere contul tău folosind acelaşi nume
-              după care eşti cunoscut: numele complet, porecla sau numele
-              afacerii.
-            </p>
-            <p className="text-xs text-gray mt-4">
-              Poţi schimba numele doar de două ori în decurs de 14 zile.
-            </p>
-          </div>
-        </div>
-        <div className="flex flex-col m:flex-row gap-y-1 m:gap-y-0 gap-x-7 mt-5">
-          <p className="font-semibold m:text-right m:max-w-[123px] m:ml-5 m:flex-[1_0_123px]">
-            Nume de utilizator
-          </p>
-          <div className="max-w-[370px]">
-            <input
-              type="text"
-              className="border-[1px] rounded border-gray outline-0 w-full py-1 px-2"
-              {...register("username")}
-              defaultValue={username}
-            />
-            <p className="text-xs text-gray mt-4">
-              În majoritatea cazurilor, vei mai avea la dispoziţie încă 14 zile
-              pentru a reveni la numele de utilizator gunghbdg.{" "}
-              <span className="text-blue">Află mai multe</span>
-            </p>
-          </div>
-        </div>
-        <div className="flex gap-x-7 mt-5 flex-col m:flex-row gap-y-1 m:gap-y-0 ">
-          <p className="font-semibold m:text-right max-w-[123px] m:ml-5 m:flex-[1_0_123px]">
-            Site web
-          </p>
-          <div className="max-w-[370px]">
-            <input
-              type="text"
-              className="border-[1px] rounded border-gray outline-0 w-full py-1"
-              disabled
-            />
-            <p className="text-xs text-gray mt-4">
-              Editarea linkurilor este posibilă doar pe mobil. Accesează
-              aplicaţia Instagram şi editează profilul pentru a schimba
-              site-urile web din biografie.
-            </p>
-          </div>
-        </div>
-        <div className="flex gap-x-7 mt-5 flex-col m:flex-row gap-y-1 m:gap-y-0">
-          <p className="font-semibold m:text-right max-w-[123px] m:ml-5 m:flex-[1_0_123px]">
-            Biografie
-          </p>
-          <div className="w-[370px] flex flex-col">
-            <textarea
-              {...register("biography")}
-              className="border-[1px] rounded border-gray outline-0 max-h-[70px] py-1 w-full"
-            ></textarea>
-            <p className="text-xs text-gray mt-4">0/150</p>
-          </div>
-        </div>
-        <div className="flex m:items-end gap-x-7 mt-8 flex-col m:flex-row gap-y-1 m:gap-y-0">
-          <p className="hidden m:block font-semibold m:text-right max-w-[123px] m:ml-5 m:flex-[1_0_123px]">
-            E-mail
-          </p>
-          <div className="max-w-[370px] flex flex-col-reverse">
-            <input
-              type="text"
-              className="m:mt-4 border-[1px] rounded border-gray outline-0 w-full py-1"
-              {...register("email")}
-            />
-            <p className="block m:hidden font-semibold mt-3 mb-1">E-mail</p>
-            <p className="text-xs text-gray mt-1">
-              Completează informaţiile personale chiar dacă acest cont este
-              folosit pentru o afacere, un animal de companie sau altceva.
-              Informaţiile nu vor apărea în profilul tău public.
-            </p>
-            <p className="font-semibold text-gray text-sm">
-              Informatii personale
-            </p>
-          </div>
-        </div>
-        <div className="flex m:items-end gap-x-7 mt-4 flex-col m:flex-row gap-y-1 m:gap-y-0">
-          <p className="font-semibold m:text-right m:flex-[1_0_143px] max-w-[143px]">
-            Numar de telefon
-          </p>
+      <div className="flex flex-col gap-y-1 m:gap-y-0 m:flex-row gap-x-7 mt-5">
+        <p className="font-semibold m:text-right max-w-none m:max-w-[143px] m:flex-[1_0_143px]">
+          Nume
+        </p>
+        <div className="max-w-[370px]">
           <input
             type="text"
-            className="max-w-[370px] border-[1px] rounded border-gray outline-0 w-full py-1"
-            {...register("phone")}
+            className="border-[1px] rounded border-gray outline-0 w-full py-1 px-2"
+            {...register("name")}
+            defaultValue={name}
           />
-        </div>
-        <div className="flex m:items-end gap-x-7 mt-4 flex-col m:flex-row gap-y-1 m:gap-y-0">
-          <p className="font-semibold m:text-right max-w-[123px] m:ml-5 m:flex-[1_0_123px]">
-            Gen
+          <p className="text-xs text-gray mt-4">
+            Ajută-i pe alţii să descopere contul tău folosind acelaşi nume după
+            care eşti cunoscut: numele complet, porecla sau numele afacerii.
           </p>
+          <p className="text-xs text-gray mt-4">
+            Poţi schimba numele doar de două ori în decurs de 14 zile.
+          </p>
+        </div>
+      </div>
+      <div className="flex flex-col m:flex-row gap-y-1 m:gap-y-0 gap-x-7 mt-5">
+        <p className="font-semibold m:text-right m:max-w-[123px] m:ml-5 m:flex-[1_0_123px]">
+          Nume de utilizator
+        </p>
+        <div className="max-w-[370px]">
           <input
             type="text"
-            className="max-w-[370px] border-[1px] rounded border-gray outline-0 w-full py-1"
+            className="border-[1px] rounded border-gray outline-0 w-full py-1 px-2"
+            {...register("username")}
+            defaultValue={username}
+          />
+          <p className="text-xs text-gray mt-4">
+            În majoritatea cazurilor, vei mai avea la dispoziţie încă 14 zile
+            pentru a reveni la numele de utilizator gunghbdg.{" "}
+            <span className="text-blue">Află mai multe</span>
+          </p>
+        </div>
+      </div>
+      <div className="flex gap-x-7 mt-5 flex-col m:flex-row gap-y-1 m:gap-y-0 ">
+        <p className="font-semibold m:text-right max-w-[123px] m:ml-5 m:flex-[1_0_123px]">
+          Site web
+        </p>
+        <div className="max-w-[370px]">
+          <input
+            type="text"
+            className="border-[1px] rounded border-gray outline-0 w-full py-1"
             disabled
           />
+          <p className="text-xs text-gray mt-4">
+            Editarea linkurilor este posibilă doar pe mobil. Accesează aplicaţia
+            Instagram şi editează profilul pentru a schimba site-urile web din
+            biografie.
+          </p>
         </div>
-        <div className="flex justify-center gap-x-[5rem] md:ml-[10rem] mt-10">
-          <Button modifiers="py-1 px-3 bg-blue text-white rounded text-sm font-semibold">
-            Trimite
-          </Button>
-          <Button modifiers="text-blue text-sm font-semibold">
-            Dezactiveaza-mi contul temporar
-          </Button>
+      </div>
+      <div className="flex gap-x-7 mt-5 flex-col m:flex-row gap-y-1 m:gap-y-0">
+        <p className="font-semibold m:text-right max-w-[123px] m:ml-5 m:flex-[1_0_123px]">
+          Biografie
+        </p>
+        <div className="w-[370px] flex flex-col">
+          <textarea
+            {...register("biography", { max: 150 })}
+            className="border-[1px] rounded border-gray outline-0 max-h-[70px] py-1 w-full"
+          ></textarea>
+          <p
+            className={`${
+              watch().biography?.length > 150 ? "text-red-600" : "text-gray"
+            } text-xs mt-4`}
+          >
+            {watch().biography?.length || 0}/150
+          </p>
         </div>
-      </form>
+      </div>
+      <div className="flex m:items-end gap-x-7 mt-8 flex-col m:flex-row gap-y-1 m:gap-y-0">
+        <p className="hidden m:block font-semibold m:text-right max-w-[123px] m:ml-5 m:flex-[1_0_123px]">
+          E-mail
+        </p>
+        <div className="max-w-[370px] flex flex-col-reverse">
+          <input
+            type="text"
+            className="m:mt-4 border-[1px] rounded border-gray outline-0 w-full py-1"
+            {...register("email")}
+          />
+          <p className="block m:hidden font-semibold mt-3 mb-1">E-mail</p>
+          <p className="text-xs text-gray mt-1">
+            Completează informaţiile personale chiar dacă acest cont este
+            folosit pentru o afacere, un animal de companie sau altceva.
+            Informaţiile nu vor apărea în profilul tău public.
+          </p>
+          <p className="font-semibold text-gray text-sm">
+            Informatii personale
+          </p>
+        </div>
+      </div>
+      <div className="flex m:items-end gap-x-7 mt-4 flex-col m:flex-row gap-y-1 m:gap-y-0">
+        <p className="font-semibold m:text-right m:flex-[1_0_143px] max-w-[143px]">
+          Numar de telefon
+        </p>
+        <input
+          type="text"
+          className="max-w-[370px] border-[1px] rounded border-gray outline-0 w-full py-1"
+          {...register("phone")}
+        />
+      </div>
+      <div className="flex m:items-end gap-x-7 mt-4 flex-col m:flex-row gap-y-1 m:gap-y-0">
+        <p className="font-semibold m:text-right max-w-[123px] m:ml-5 m:flex-[1_0_123px]">
+          Gen
+        </p>
+        <input
+          type="text"
+          className="max-w-[370px] border-[1px] rounded border-gray outline-0 w-full py-1"
+          disabled
+        />
+      </div>
+      <div className="flex justify-center gap-x-[5rem] md:ml-[10rem] mt-10">
+        <Button
+          onClick={() => onSubmit()}
+          modifiers="py-1 px-3 bg-blue text-white rounded text-sm font-semibold"
+        >
+          Trimite
+        </Button>
+        <Button modifiers="text-blue text-sm font-semibold">
+          Dezactiveaza-mi contul temporar
+        </Button>
+      </div>
     </div>
   );
 }

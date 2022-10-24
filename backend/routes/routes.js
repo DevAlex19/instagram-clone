@@ -3,9 +3,8 @@ const router = express.Router();
 const User = require("../model/model");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
-const Follow = require('../model/followModel')
-const Posts = require('../model/postsModel')
-
+const Follow = require("../model/followModel");
+const Posts = require("../model/postsModel");
 
 // Create user
 router.post("/createUser", async (req, res) => {
@@ -36,7 +35,6 @@ router.post("/createUser", async (req, res) => {
 
 // Create post
 router.post("/createPost", async (req, res) => {
-
   const post = new Posts({
     email: req.body.email,
     image: req.body.image,
@@ -51,20 +49,19 @@ router.post("/createPost", async (req, res) => {
   }
 });
 
-
 //Follow user
-router.post('/follow', async (req, res) => {
+router.post("/follow", async (req, res) => {
   try {
     const follow = new Follow({
       following: req.body.following,
-      followers: req.body.followers
-    })
-    const newFollow = await follow.save()
-    res.status(201).json(newFollow)
+      followers: req.body.followers,
+    });
+    const newFollow = await follow.save();
+    res.status(201).json(newFollow);
   } catch (e) {
-    res.status(400).json({ message: err.message })
+    res.status(400).json({ message: err.message });
   }
-})
+});
 
 // Get user
 router.post("/getUser", async (req, res) => {
@@ -286,17 +283,31 @@ router.post("/changeAvatar", async (req, res) => {
   }
 });
 
-
-router.post('/getProfile', async (req, res) => {
+// Edit profile
+router.post("/editProfile", async (req, res) => {
   try {
-    const user = await User.findOne({ username: req.body.username })
-    const posts = await Posts.find({ email: user.email })
+    const { email, name, username } = req.body;
+
+    await User.updateOne(
+      { email: req.body.email },
+      { $set: { name, username } }
+    );
+    res.status(201).json({ name, username });
+  } catch (e) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
+// Get profile
+router.post("/getProfile", async (req, res) => {
+  try {
+    const user = await User.findOne({ username: req.body.username });
+    const posts = await Posts.find({ email: user.email });
     res.status(201).json({ user, posts });
   } catch (e) {
-    res.status(400).json({ message: e.message })
+    res.status(400).json({ message: e.message });
   }
-})
-
+});
 
 function generateAccessToken(user) {
   return jwt.sign({ user }, process.env.NEXT_PUBLIC_TOKEN, {

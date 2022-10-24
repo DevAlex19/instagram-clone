@@ -22,9 +22,16 @@ module.exports = {
             opacity: "1",
           },
         },
+        message: {
+          "0%": { transform: "translateY(50px)" },
+          "10%": { transform: "translateY(0px)" },
+          "90%": { transform: "translateY(0px)" },
+          "100%": { transform: "translateY(50px)" },
+        },
       },
       animation: {
         fadeIn: "fadeIn 1.2s ease-in",
+        message: "message 5s ease-in",
       },
       borderWidth: {
         1: "1px",

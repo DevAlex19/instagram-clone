@@ -19,15 +19,18 @@ const initialState = {
       token: "",
       date: "",
       status: "",
-      profile: ''
+      profile: "",
     },
     loading: "idle",
   },
   posts: [
     {
-      email: '', image: '', likes: '', date: '',
-      comments: []
-    }
+      email: "",
+      image: "",
+      likes: "",
+      date: "",
+      comments: [],
+    },
   ],
   profile: {
     name: "",
@@ -38,8 +41,8 @@ const initialState = {
     token: "",
     date: "",
     status: "",
-    profile: ''
-  }
+    profile: "",
+  },
 };
 
 export const mainSlice = createSlice({
@@ -68,17 +71,17 @@ export const mainSlice = createSlice({
       if (action.payload) {
         state.user.data.profile = action.payload;
       }
-    })
+    });
     builder.addCase(createPost.fulfilled, (state, action) => {
       if (action.payload) {
         state.posts = [...state.posts, action.payload];
       }
-    })
+    });
     builder.addCase(getProfile.fulfilled, (state, action) => {
       const { user, posts } = action.payload;
-      state.profile = { ...state.profile, ...user }
-      state.posts = [...posts]
-    })
+      state.profile = { ...state.profile, ...user };
+      state.posts = [...posts];
+    });
   },
 });
 

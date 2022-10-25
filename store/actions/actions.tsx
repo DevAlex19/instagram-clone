@@ -5,6 +5,12 @@ type getUserType = {
   username: string;
 };
 
+type updateProfile = {
+  email: string;
+  name?: string;
+  username?: string;
+};
+
 type getUserLoginType = {
   email: string;
   password: string;
@@ -17,10 +23,9 @@ type createUserType = {
   date?: string;
 };
 type changeAvatarType = {
-  data: FormData
+  data: FormData;
   email: string;
-}
-
+};
 
 type resetPasswordType = {
   token: string;
@@ -233,87 +238,167 @@ export const sendResetPasswordEmail = createAsyncThunk(
   }
 );
 
-
-export const changeAvatar = createAsyncThunk('app/avatar', async ({ data, email }: changeAvatarType) => {
-  let result = '';
-  try {
-    await fetch(`https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUD_NAME}/image/upload`, {
-      method: 'post',
-      body: data
-    }).then(res => res.json()).then(async data => {
-      if (data.url) {
-        const avatar = await fetch("http://localhost:3002/changeAvatar", {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email,
-            profile: data.url
-          }),
+export const changeAvatar = createAsyncThunk(
+  "app/avatar",
+  async ({ data, email }: changeAvatarType) => {
+    let result = "";
+    try {
+      await fetch(
+        `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUD_NAME}/image/upload`,
+        {
+          method: "post",
+          body: data,
+        }
+      )
+        .then((res) => res.json())
+        .then(async (data) => {
+          if (data.url) {
+            const avatar = await fetch("http://localhost:3002/changeAvatar", {
+              method: "POST",
+              headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                email,
+                profile: data.url,
+              }),
+            });
+            result = data.url;
+          }
         });
-        result = data.url
-      }
-
-    })
-  } catch (e) {
-    console.log(e)
+    } catch (e) {
+      console.log(e);
+    }
+    return result;
   }
-  return result;
-})
+);
 
-
-
-export const createPost = createAsyncThunk('app/createPost', async ({ email, data }: changeAvatarType) => {
-  let result = {
-    email: '', image: '', likes: '', date: '',
-    comments: []
-  };
-  try {
-    await fetch(`https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUD_NAME}/image/upload`, {
-      method: 'post',
-      body: data
-    }).then(res => res.json()).then(async data => {
-      if (data.url) {
-        const post = await fetch("http://localhost:3002/createPost", {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email,
-            image: data.url
-          }),
+export const createPost = createAsyncThunk(
+  "app/createPost",
+  async ({ email, data }: changeAvatarType) => {
+    let result = {
+      _id: "",
+      email: "",
+      image: "",
+      likes: [],
+      date: "",
+      comments: [],
+      profile: "",
+      username: "",
+    };
+    try {
+      await fetch(
+        `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUD_NAME}/image/upload`,
+        {
+          method: "post",
+          body: data,
+        }
+      )
+        .then((res) => res.json())
+        .then(async (data) => {
+          if (data.url) {
+            const post = await fetch("http://localhost:3002/createPost", {
+              method: "POST",
+              headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                email,
+                image: data.url,
+              }),
+            });
+            const postResult = await post.json();
+            result = postResult;
+          }
         });
-        const postResult = await post.json()
-        result = postResult
-      }
-
-    })
-  } catch (e) {
-    console.log(e)
+    } catch (e) {
+      console.log(e);
+    }
+    return result;
   }
-  return result;
-})
+);
 
+export const getProfile = createAsyncThunk(
+  "app/getProfile",
+  async (username: string) => {
+    try {
+      const profile = await fetch("http://localhost:3002/getProfile", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username,
+        }),
+      });
+      const result = await profile.json();
+      return result;
+    } catch (e) {
+      console.log(e);
+    }
+  }
+);
 
-export const getProfile = createAsyncThunk('app/getProfile', async (username: string) => {
-  try {
-    const profile = await fetch("http://localhost:3002/getProfile", {
-      method: "POST",
+export const editPassword = createAsyncThunk(
+  "app/editPassword",
+  async ({ email, password }: getUserLoginType) => {
+    const updatePassword = await fetch("http://localhost:3002/editPassword", {
+      method: "post",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        username
+        email,
+        password,
       }),
-    })
-    const result = await profile.json()
+    });
+    const result = await updatePassword.json();
     return result;
-  } catch (e) {
-    console.log(e)
   }
-})
+);
+
+export const getUsername = createAsyncThunk(
+  "app/getUsername",
+  async (username: string) => {
+    const getUsername = await fetch("http://localhost:3002/getUsername", {
+      method: "post",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        username,
+      }),
+    });
+    const result = await getUsername.json();
+    return result;
+  }
+);
+
+export const editProfile = createAsyncThunk(
+  "app/editProfile",
+  async (data: updateProfile) => {
+    const updateProfile = await fetch("http://localhost:3002/editProfile", {
+      method: "post",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        ...data,
+      }),
+    });
+    const result = await updateProfile.json();
+    return result;
+  }
+);
+
+export const getPosts = createAsyncThunk("app/getPosts", async () => {
+  const posts = await fetch("http://localhost:3002/getPosts");
+  const result = await posts.json();
+  return result;
+});

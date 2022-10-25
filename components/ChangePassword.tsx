@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
+import { editPassword } from "../store/actions/actions";
 import { addNotification } from "../store/reducers/main";
 import { RootState, useAppDispatch } from "../store/store/store";
 import Button from "./Button";
@@ -12,14 +13,9 @@ type FormType = {
 };
 
 function ChangePassword() {
+  const { register, watch, reset } = useForm<FormType>();
   const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors },
-  } = useForm<FormType>();
-  const {
-    data: { password },
+    data: { password, email },
   } = useSelector((state: RootState) => state.user);
   const dispatch = useAppDispatch();
 
@@ -38,6 +34,7 @@ function ChangePassword() {
       );
       return;
     }
+    dispatch(editPassword({ email, password: watch().newPassword }));
   }
 
   return (

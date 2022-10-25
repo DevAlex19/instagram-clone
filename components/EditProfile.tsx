@@ -3,7 +3,12 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { watch } from "../backend/model/model";
-import { changeAvatar } from "../store/actions/actions";
+import {
+  changeAvatar,
+  editProfile,
+  getUsername,
+} from "../store/actions/actions";
+import { addNotification } from "../store/reducers/main";
 import { RootState, useAppDispatch } from "../store/store/store";
 import Button from "./Button";
 
@@ -12,14 +17,29 @@ function EditProfile() {
   const {
     data: { email, profile, name, username },
   } = useSelector((state: RootState) => state.user);
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors },
-  } = useForm();
+  const { register, watch } = useForm();
 
-  function onSubmit() {}
+  function onSubmit() {
+    if (name !== watch().name) {
+      dispatch(editProfile({ email, name: watch().name }));
+      return;
+    }
+
+    if (username !== watch().username) {
+      dispatch(getUsername(watch().username)).then((res) => {
+        if (res.payload.getUsername) {
+          dispatch(
+            addNotification(
+              "Acest nume de utilizator nu este disponibil. Te rugăm să încerci altul."
+            )
+          );
+          return;
+        } else {
+          dispatch(editProfile({ email, username: watch().username }));
+        }
+      });
+    }
+  }
 
   const uploadAvatar = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {

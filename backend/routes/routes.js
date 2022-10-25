@@ -288,10 +288,7 @@ router.post("/editProfile", async (req, res) => {
   try {
     const { email, name, username } = req.body;
 
-    await User.updateOne(
-      { email: req.body.email },
-      { $set: { name, username } }
-    );
+    await User.updateOne({ email: email }, { $set: { name, username } });
     res.status(201).json({ name, username });
   } catch (e) {
     res.status(400).json({ message: err.message });
@@ -314,5 +311,57 @@ function generateAccessToken(user) {
     expiresIn: "30d",
   });
 }
+
+// Get username
+router.post("/getUsername", async (req, res) => {
+  try {
+    const getUsername = await User.findOne({ username: req.body.username });
+
+    res.status(201).json({ getUsername });
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
+// Edit password
+router.post("/editPassword", async (req, res) => {
+  try {
+    await User.updateOne(
+      { email: req.body.email },
+      { $set: { password: req.body.password } }
+    );
+    res.status(201).json({ password: req.body.password });
+  } catch (e) {
+    res.status(400).json({ message: e.message });
+  }
+});
+
+// Get Posts
+
+router.get("/getPosts", async (req, res) => {
+  try {
+    const posts = await Posts.find().sort({ _id: -1 }).limit(20);
+    const users = await Promise.all(
+      posts.map(async (post) => {
+        const { _id, date, email, image, likes, comments } = post;
+        const user = await User.findOne({ email: post.email });
+        return {
+          _id,
+          date,
+          email,
+          image,
+          likes,
+          comments,
+          username: user.username,
+          profile: user.profile,
+        };
+      })
+    );
+
+    res.status(201).json(users);
+  } catch (e) {
+    res.status(400).json({ message: e.message });
+  }
+});
 
 module.exports = router;

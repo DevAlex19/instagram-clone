@@ -42,7 +42,7 @@ function ExplorePosts() {
             </div>
           );
         })}
-      <PostModal modal={modal} setModal={setModal} />
+      {/* <PostModal modal={modal} setModal={setModal} /> */}
     </div>
   );
 }

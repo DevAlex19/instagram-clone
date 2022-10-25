@@ -6,6 +6,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
+import { useSelector } from "react-redux";
+import { RootState } from "../store/store/store";
 import Button from "./Button";
 
 export type ModalType = {
@@ -14,6 +16,12 @@ export type ModalType = {
 };
 
 function PostModal({ setModal, modal }: ModalType) {
+  const postId = useSelector((state: RootState) => state.postModal);
+  const posts = useSelector((state: RootState) => state.posts).find(
+    (post) => post._id === postId
+  );
+  console.log(posts);
+
   return (
     <div
       style={{ background: "rgba(0,0,0,0.5)", zIndex: "1" }}
@@ -27,13 +35,15 @@ function PostModal({ setModal, modal }: ModalType) {
         onClick={(e) => e.stopPropagation()}
       >
         <div className="relative w-full h-full min-w-[300px]">
-          <Image
-            src="https://img.freepik.com/free-vector/best-scene-nature-landscape-mountain-river-forest-with-sunset-evening-warm-tone-illustration_1150-39403.jpg?w=2000"
-            width="100%"
-            height="100%"
-            layout="fill"
-            objectFit="cover"
-          />
+          {posts ? (
+            <Image
+              src={posts.image}
+              width="100%"
+              height="100%"
+              layout="fill"
+              objectFit="cover"
+            />
+          ) : null}
         </div>
         <div className="w-full flex flex-col min-w-[300px] bg-white">
           <div
@@ -57,18 +67,22 @@ function PostModal({ setModal, modal }: ModalType) {
               borderBottom: "1px solid rgb(239, 239, 239)",
             }}
           >
-            <div className="flex gap-x-3 mb-5">
-              <Image
-                src="/images/avatar.png"
-                width="35px"
-                height="35px"
-                className="rounded-full cursor-pointer"
-              />
-              <p className="text-sm">
-                <span className="font-semibold">name </span>
-                dfijogiofjgiofjgifojfijfifjf
-              </p>
-            </div>
+            {posts?.comments.map((comment, index) => {
+              return (
+                <div key={index} className="flex gap-x-3 mb-5">
+                  <Image
+                    src="/images/avatar.png"
+                    width="35px"
+                    height="35px"
+                    className="rounded-full cursor-pointer"
+                  />
+                  <p className="text-sm">
+                    <span className="font-semibold">{comment.user} </span>
+                    {comment.comment}
+                  </p>
+                </div>
+              );
+            })}
           </div>
 
           <div className="flex text-2xl gap-x-4 p-4">
@@ -79,7 +93,9 @@ function PostModal({ setModal, modal }: ModalType) {
               icon={faLocationArrow}
             />
           </div>
-          <p className="px-4 font-semibold text-sm mb-4">51 aprecieri</p>
+          <p className="px-4 font-semibold text-sm mb-4">
+            {posts?.likes.length || 0} aprecieri
+          </p>
           <div
             style={{ borderTop: "1px solid rgb(239, 239, 239)" }}
             className="p-4 flex justify-between"

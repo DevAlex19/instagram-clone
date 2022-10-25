@@ -1,8 +1,16 @@
+import { useEffect } from "react";
 import Image from "next/image";
 import HomePagePost from "./HomePagePost";
 import Suggestions from "./Suggestions";
+import { useAppDispatch } from "../store/store/store";
+import { getPosts } from "../store/actions/actions";
 
 function HomePagePosts() {
+  const dispatch = useAppDispatch();
+  useEffect(() => {
+    dispatch(getPosts());
+  }, []);
+
   return (
     <div className="mx-auto mt-7 flex gap-x-10 px-2 mb-10 w-full md:w-850">
       <div style={{ width: "55%", minWidth: "350px" }} className="mx-auto">

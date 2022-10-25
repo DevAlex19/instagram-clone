@@ -3,6 +3,9 @@ import {
   changeAvatar,
   checkUser,
   createPost,
+  editPassword,
+  editProfile,
+  getPosts,
   getProfile,
   registerUser,
   updateAccountStatus,
@@ -26,11 +29,14 @@ const initialState = {
   },
   posts: [
     {
+      _id: "",
       email: "",
       image: "",
-      likes: "",
+      likes: [],
       date: "",
-      comments: [],
+      username: "",
+      profile: "",
+      comments: [{ user: "", comment: "", img: "", subcomments: [] }],
     },
   ],
   profile: {
@@ -45,6 +51,7 @@ const initialState = {
     profile: "",
   },
   notification: [""],
+  postModal: "",
 };
 
 export const mainSlice = createSlice({
@@ -56,6 +63,9 @@ export const mainSlice = createSlice({
     },
     removeNotification: (state) => {
       state.notification = [""];
+    },
+    setModalId: (state, action) => {
+      state.postModal = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -91,9 +101,26 @@ export const mainSlice = createSlice({
       state.profile = { ...state.profile, ...user };
       state.posts = [...posts];
     });
+    builder.addCase(editPassword.fulfilled, (state, action) => {
+      state.user.data.password = action.payload;
+    });
+    builder.addCase(editProfile.fulfilled, (state, action) => {
+      if (action.payload.username) {
+        state.user.data.username = action.payload.username;
+      }
+      if (action.payload.name) {
+        state.user.data.name = action.payload.name;
+      }
+    });
+    builder.addCase(getPosts.fulfilled, (state, action) => {
+      if (action.payload) {
+        state.posts = [...action.payload];
+      }
+    });
   },
 });
 
-export const { addNotification, removeNotification } = mainSlice.actions;
+export const { addNotification, removeNotification, setModalId } =
+  mainSlice.actions;
 
 export default mainSlice.reducer;

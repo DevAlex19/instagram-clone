@@ -92,24 +92,8 @@ function UserProfile() {
           <p className="text-gray">urmarire</p>
         </div>
       </div>
-      {/* <div className="flex flex-col items-center justify-center mt-[4rem]">
-        <div className="border-2 rounded-full w-[60px] h-[60px] flex items-center justify-center">
-          <Image
-            src="/images/camera.webp"
-            width="40px"
-            height="40px"
-            className="rounded-full cursor-pointer"
-          />
-        </div>
-        <p className="text-2xl font-light mt-5">Distribuie fotografii</p>
-        <p className="mt-3 text-sm">
-          Cand distribui fotografii, acestea apar in profilul tau.
-        </p>
-        <Button modifiers="text-blue text-sm font-semibold mt-5">
-          Distribuie prima fotografie
-        </Button>
-      </div> */}
-      {posts[0].image ? (
+
+      {posts[0]?.image ? (
         <div
           style={{ gridTemplateColumns: "repeat(auto-fit,minmax(250px,1fr)" }}
           className="max-w-[970px] justify-between gap-7 grid mt-7"
@@ -156,7 +140,25 @@ function UserProfile() {
           })}
           <PostModal modal={modal} setModal={setModal} />
         </div>
-      ) : null}
+      ) : (
+        <div className="flex flex-col items-center justify-center mt-[4rem]">
+          <div className="border-2 rounded-full w-[60px] h-[60px] flex items-center justify-center">
+            <Image
+              src="/images/camera.webp"
+              width="40px"
+              height="40px"
+              className="rounded-full cursor-pointer"
+            />
+          </div>
+          <p className="text-2xl font-light mt-5">Distribuie fotografii</p>
+          <p className="mt-3 text-sm">
+            Cand distribui fotografii, acestea apar in profilul tau.
+          </p>
+          <Button modifiers="text-blue text-sm font-semibold mt-5">
+            Distribuie prima fotografie
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

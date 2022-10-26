@@ -364,4 +364,22 @@ router.get("/getPosts", async (req, res) => {
   }
 });
 
+// Add comment
+
+router.post("/addComment", async (req, res) => {
+  try {
+    const comment = await Posts.updateOne(
+      { _id: req.body.id },
+      {
+        $push: {
+          comments: req.body.data,
+        },
+      }
+    );
+    res.status(201).json({ id: req.body.id, ...req.body.data });
+  } catch (e) {
+    res.status(400).json({ message: e.message });
+  }
+});
+
 module.exports = router;

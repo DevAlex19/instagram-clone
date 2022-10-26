@@ -20,7 +20,6 @@ function PostModal({ setModal, modal }: ModalType) {
   const posts = useSelector((state: RootState) => state.posts).find(
     (post) => post._id === postId
   );
-  console.log(posts);
 
   return (
     <div

@@ -27,6 +27,17 @@ type changeAvatarType = {
   email: string;
 };
 
+type addCommentType = {
+  comment: string;
+  user: string;
+  img: string;
+  subcomments: any;
+};
+type commentType = {
+  data: addCommentType;
+  id: string;
+};
+
 type resetPasswordType = {
   token: string;
   password: string;
@@ -402,3 +413,22 @@ export const getPosts = createAsyncThunk("app/getPosts", async () => {
   const result = await posts.json();
   return result;
 });
+
+export const addComment = createAsyncThunk(
+  "app/addComment",
+  async ({ data, id }: commentType) => {
+    const addComment = await fetch("http://localhost:3002/addComment", {
+      method: "post",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        data,
+        id,
+      }),
+    });
+    const result = await addComment.json();
+    return result;
+  }
+);

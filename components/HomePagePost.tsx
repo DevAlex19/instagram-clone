@@ -3,13 +3,22 @@ import { faEllipsis, faLocationArrow } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
-import { RootState } from "../store/store/store";
+import { addComment } from "../store/actions/actions";
+import { setModalId } from "../store/reducers/main";
+import { RootState, useAppDispatch } from "../store/store/store";
 import Button from "./Button";
+import PostModal from "./PostModal";
 
 function HomePagePost() {
   const [modal, setModal] = useState(false);
   const posts = useSelector((state: RootState) => state.posts);
+  const {
+    data: { username, profile },
+  } = useSelector((state: RootState) => state.user);
+  const { register, watch } = useForm();
+  const dispatch = useAppDispatch();
 
   return (
     <>
@@ -27,7 +36,7 @@ function HomePagePost() {
             <div className="flex justify-between items-center p-3">
               <div className="flex gap-x-3">
                 <Image
-                  src={post.profile}
+                  src={post.profile ? post.profile : "/images/avatar.png"}
                   width="35px"
                   height="35px"
                   className="rounded-full cursor-pointer"
@@ -68,7 +77,10 @@ function HomePagePost() {
             </p>
             {comments > 1 ? (
               <p
-                onClick={() => setModal(true)}
+                onClick={() => {
+                  dispatch(setModalId(post._id));
+                  setModal(true);
+                }}
                 className="px-3 font-semibold text-sm mt-1.5 mb-3 cursor-pointer text-gray"
               >
                 Vezi toate cele {comments} de comentarii
@@ -80,17 +92,35 @@ function HomePagePost() {
               style={{ borderTop: "1px solid rgb(239, 239, 239)" }}
               className="p-3 flex justify-between"
             >
-              <input
-                className="text-sm outline-0"
-                type="text"
-                placeholder="Adauga un comentariu..."
-                style={{ width: "85%" }}
-              />
-              <Button modifiers="text-blue text-sm font-semibold">
+              {post._id ? (
+                <input
+                  className="text-sm outline-0"
+                  type="text"
+                  placeholder="Adauga un comentariu..."
+                  style={{ width: "85%" }}
+                  {...register(`${post._id}`)}
+                />
+              ) : null}
+              <Button
+                modifiers="text-blue text-sm font-semibold"
+                onClick={() => {
+                  dispatch(
+                    addComment({
+                      id: post._id,
+                      data: {
+                        comment: watch()[post._id],
+                        user: username,
+                        img: profile,
+                        subcomments: [],
+                      },
+                    })
+                  );
+                }}
+              >
                 Posteaza
               </Button>
             </div>
-            {/* <PostModal setModal={setModal} modal={modal} /> */}
+            <PostModal setModal={setModal} modal={modal} />
           </div>
         );
       })}

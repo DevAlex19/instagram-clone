@@ -37,12 +37,6 @@ function Navbar() {
               height="30px"
               className="cursor-pointer"
             />
-            {router.pathname === "/" ? (
-              <FontAwesomeIcon
-                icon={faChevronDown}
-                className="text-xs mt-1 cursor-pointer"
-              />
-            ) : null}
           </div>
           {data.email ? (
             <div
@@ -87,9 +81,9 @@ function Navbar() {
                 <Image
                   src={
                     router.pathname === "/" &&
-                      !uploadModal &&
-                      !favoriteModal &&
-                      !menuDropdown
+                    !uploadModal &&
+                    !favoriteModal &&
+                    !menuDropdown
                       ? "/images/home-solid.png"
                       : "/images/home.png"
                   }
@@ -105,9 +99,9 @@ function Navbar() {
                 <Image
                   src={
                     router.pathname === "/inbox" &&
-                      !uploadModal &&
-                      !favoriteModal &&
-                      !menuDropdown
+                    !uploadModal &&
+                    !favoriteModal &&
+                    !menuDropdown
                       ? "/images/plane-solid.png"
                       : "/images/plane.png"
                   }
@@ -136,9 +130,9 @@ function Navbar() {
                 <Image
                   src={
                     router.pathname === "/explore" &&
-                      !uploadModal &&
-                      !favoriteModal &&
-                      !menuDropdown
+                    !uploadModal &&
+                    !favoriteModal &&
+                    !menuDropdown
                       ? "/images/compass-solid.png"
                       : "/images/compass.png"
                   }

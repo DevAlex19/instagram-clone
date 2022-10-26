@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import {
+  addComment,
   changeAvatar,
   checkUser,
   createPost,
@@ -116,6 +117,12 @@ export const mainSlice = createSlice({
       if (action.payload) {
         state.posts = [...action.payload];
       }
+    });
+    builder.addCase(addComment.fulfilled, (state, action) => {
+      const post = state.posts.findIndex(
+        (post) => post._id === action.payload.id
+      );
+      state.posts[post].comments.push(action.payload);
     });
   },
 });
